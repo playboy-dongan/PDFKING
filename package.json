@@ -6,27 +6,12 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/serve-static.mjs --dir public",
+    "build": "node scripts/build-static.mjs",
     "test:e2e": "node scripts/e2e-tools.mjs",
-    "capture:layout": "node scripts/capture-layout.mjs",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "node scripts/serve-static.mjs --dir dist"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.1.10",
-    "@neslinesli93/qpdf-wasm": "^0.3.0",
-    "@tailwindcss/vite": "^4.2.2",
-    "astro": "^6.1.7",
-    "docx": "^9.6.1",
-    "flowbite": "^4.0.1",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^4.2.1",
-    "jszip": "^3.10.1",
-    "mammoth": "^1.12.0",
-    "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^5.6.205",
-    "tailwindcss": "^4.2.2",
-    "tesseract.js": "^7.0.0"
+    "pdf-lib": "^1.17.1"
   }
 }

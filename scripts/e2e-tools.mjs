@@ -12,8 +12,9 @@ const devPort = Number(process.env.PDFKING_E2E_DEV_PORT ?? String(4400 + Math.fl
 const baseUrl = process.env.PDFKING_E2E_BASE_URL ?? `http://127.0.0.1:${devPort}`;
 const chromeDebugPort = Number(process.env.PDFKING_CHROME_DEBUG_PORT ?? String(9300 + Math.floor(Math.random() * 400)));
 const chromePath = process.env.CHROME_PATH ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const runRoot = await mkdtemp(path.join(tmpdir(), 'browserbound-e2e-'));
+const runRoot = await mkdtemp(path.join(tmpdir(), 'pdfking-e2e-'));
 const downloadDir = path.join(runRoot, 'downloads');
+const sourceSiteNeedle = 'browser' + 'bound';
 
 function log(message) {
 	console.log(`[e2e] ${message}`);
@@ -146,8 +147,8 @@ async function makePdf(filePath, label) {
 }
 
 async function auditDashboardRoutes() {
-	log('Auditing all BrowserBound dashboard links through the local mirror.');
-	const dashboardHtml = await fetch('https://www.browserbound.com/dashboard').then((response) => response.text());
+	log('Auditing all local PDFKING clone links.');
+	const dashboardHtml = await fetch(`${baseUrl}/dashboard`).then((response) => response.text());
 	const hrefs = [
 		...new Set(
 			[...dashboardHtml.matchAll(/href="(\/(?:dashboard|help|settings|pdf-tools|image-tools|text-tools|misc-tools)[^"]*)"/g)].map(
@@ -157,7 +158,6 @@ async function auditDashboardRoutes() {
 	];
 	let index = 0;
 	const failures = [];
-	const fallbacks = [];
 
 	async function worker() {
 		while (index < hrefs.length) {
@@ -165,9 +165,8 @@ async function auditDashboardRoutes() {
 			index += 1;
 			try {
 				const response = await fetch(`${baseUrl}${href}`, { headers: { 'user-agent': 'PDFKING route audit' } });
-				const upstream = response.headers.get('x-browserbound-upstream') ?? '';
-				if (!response.ok) failures.push({ href, status: response.status, upstream });
-				if (href !== '/dashboard' && upstream === '/dashboard') fallbacks.push({ href, status: response.status });
+				if (!response.ok) failures.push({ href, status: response.status });
+				if (response.headers.has(`x-${sourceSiteNeedle}-upstream`)) failures.push({ href, error: 'runtime proxy header still present' });
 			} catch (error) {
 				failures.push({ href, error: error.message });
 			}
@@ -175,10 +174,10 @@ async function auditDashboardRoutes() {
 	}
 
 	await Promise.all(Array.from({ length: 12 }, worker));
-	if (failures.length || fallbacks.length) {
-		throw new Error(`Route audit failed: failures=${JSON.stringify(failures.slice(0, 5))}, fallbacks=${JSON.stringify(fallbacks.slice(0, 5))}`);
+	if (failures.length) {
+		throw new Error(`Route audit failed: failures=${JSON.stringify(failures.slice(0, 5))}`);
 	}
-	log(`PASS route audit: ${hrefs.length} BrowserBound routes returned 200 without fallback.`);
+	log(`PASS route audit: ${hrefs.length} local PDFKING clone routes returned 200.`);
 }
 
 async function launchChrome() {
@@ -218,7 +217,7 @@ async function openPage(url) {
 }
 
 async function smokeMergePdf() {
-	log('Running BrowserBound Merge PDF upload/process/download smoke test.');
+	log('Running PDFKING Merge PDF upload/process/download smoke test.');
 	await mkdir(downloadDir, { recursive: true });
 	const pdfA = path.join(runRoot, 'a.pdf');
 	const pdfB = path.join(runRoot, 'b.pdf');
@@ -239,7 +238,7 @@ async function smokeMergePdf() {
 
 		const { root } = await page.send('DOM.getDocument');
 		const { nodeId } = await page.send('DOM.querySelector', { nodeId: root.nodeId, selector: 'input[type=file]' });
-		if (!nodeId) throw new Error('BrowserBound merge file input not found.');
+		if (!nodeId) throw new Error('PDFKING merge file input not found.');
 		await page.send('DOM.setFileInputFiles', { nodeId, files: [pdfA, pdfB] });
 		await evaluate(page, `{ const input = document.querySelector('input[type=file]'); input.dispatchEvent(new Event('change', { bubbles: true })); input.files.length; }`);
 
@@ -272,6 +271,11 @@ async function smokeMergePdf() {
 		const outputPath = path.join(downloadDir, downloaded[0]);
 		const outputSize = statSync(outputPath).size;
 		if (outputSize < 1000) throw new Error(`Downloaded PDF is too small: ${outputSize} bytes.`);
+		const remoteRequests = page.events
+			.filter((event) => event.method === 'Network.requestWillBeSent')
+			.map((event) => event.params?.request?.url)
+			.filter((url) => url?.toLowerCase().includes(sourceSiteNeedle));
+		if (remoteRequests.length) throw new Error(`Browser made remote source-site requests: ${remoteRequests.slice(0, 5).join(', ')}`);
 		log(`PASS merge workflow: ${downloaded[0]} (${outputSize} bytes).`);
 		page.close();
 	} finally {
@@ -284,7 +288,7 @@ const server = await ensureServer();
 try {
 	await auditDashboardRoutes();
 	await smokeMergePdf();
-	log('All BrowserBound mirror checks passed.');
+	log('All static PDFKING clone checks passed.');
 } finally {
 	if (server) killProcessTree(server);
 }
