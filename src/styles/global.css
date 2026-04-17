@@ -3,7 +3,7 @@
 @source "../../node_modules/flowbite/**/*.js";
 
 :root {
-	color-scheme: dark;
+	color-scheme: light;
 	font-family: Inter, "Segoe UI", sans-serif;
 }
 
@@ -14,7 +14,7 @@ body {
 }
 
 body {
-	background-color: #020617;
+	background-color: #ffffff;
 }
 
 a {

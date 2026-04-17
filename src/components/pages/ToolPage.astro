@@ -25,94 +25,94 @@ const schema = buildToolSchema(tool, Astro.url.href);
 ---
 
 <Layout title={tool.title} description={tool.metaDescription} canonical={Astro.url.href} schema={schema} lang={localeMeta.htmlLang} alternates={alternates}>
-	<header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-		<div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-			<a href={getLocalePath(locale)} class="flex items-center gap-3 text-lg font-bold text-slate-900">
-				<span class="inline-flex size-10 items-center justify-center rounded-xl bg-slate-900 text-sm font-black tracking-[0.25em] text-white">PK</span>
-				<span>PDFKing</span>
+	<header class="fixed left-0 right-0 top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
+		<div class="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-4 lg:px-6">
+			<a href={getLocalePath(locale)} class="flex items-center">
+				<img src="/pdfking-logo.svg" alt="PDFKING logo" class="mr-3 h-9 w-9" />
+				<span class="self-center whitespace-nowrap text-xl font-semibold text-gray-900">PDFKING</span>
 			</a>
-			<nav class="hidden items-center gap-8 text-sm font-medium text-slate-600 lg:flex">
-				<a href={getLocalePath(locale)} class="transition hover:text-slate-900">{copy.home}</a>
-				<a href="#tool" class="transition hover:text-slate-900">{copy.tool}</a>
-				<a href="#faq" class="transition hover:text-slate-900">{copy.faq}</a>
+			<nav class="hidden items-center gap-8 text-sm font-medium text-gray-700 lg:flex">
+				<a href={getLocalePath(locale)} class="hover:text-blue-600">{copy.home}</a>
+				<a href="#tool" class="hover:text-blue-600">{copy.tool}</a>
+				<a href="#faq" class="hover:text-blue-600">{copy.faq}</a>
 			</nav>
 			<div class="flex items-center gap-3">
 				<LanguageSwitcher locale={locale} slug={slug} />
-				<a href={getLocalePath(locale, 'merge-pdf')} class="hidden rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 md:inline-flex">
+				<a href={getLocalePath(locale, 'merge-pdf')} class="hidden rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:inline-flex">
 					{copy.moreTools}
 				</a>
 			</div>
 		</div>
 	</header>
 
-	<main>
-		<section class="overflow-hidden bg-white pb-14 pt-12 lg:pb-20 lg:pt-18">
-			<div class="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[0.96fr_1.04fr]">
-				<div>
-					<nav class="mb-6 text-sm text-slate-500">
-						<a href={getLocalePath(locale)} class="transition hover:text-slate-900">{copy.home}</a>
+	<main class="pt-20">
+		<section class="bg-white">
+			<div class="mx-auto grid max-w-screen-xl items-center gap-10 px-4 py-12 lg:grid-cols-12 lg:px-6 lg:py-20">
+				<div class="lg:col-span-5">
+					<nav class="mb-6 text-sm text-gray-500">
+						<a href={getLocalePath(locale)} class="hover:text-blue-700">{copy.home}</a>
 						<span class="mx-2">/</span>
-						<span class="text-slate-700">{tool.slug}</span>
+						<span class="font-medium text-gray-900">{tool.slug}</span>
 					</nav>
-					<span class="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">{tool.categoryLabel}</span>
-					<h1 class="mt-6 max-w-3xl text-4xl font-black leading-tight tracking-tight text-slate-900 md:text-5xl">{tool.h1}</h1>
-					<p class="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">{tool.intro}</p>
-					<div class="mt-8 grid gap-3 sm:grid-cols-3">
+					<p class="mb-4 inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">{tool.categoryLabel}</p>
+					<h1 class="mb-6 max-w-2xl text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl">
+						{tool.h1}
+					</h1>
+					<p class="mb-8 max-w-2xl text-lg font-light leading-8 text-gray-500">{tool.intro}</p>
+					<div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
 						{tool.highlights.map((item) => (
-							<div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700">{item}</div>
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm font-medium text-gray-700">{item}</div>
 						))}
 					</div>
-					<div class="mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
-						<p class="text-sm leading-8 text-slate-600">{tool.pageCopy}</p>
+					<div class="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+						<p class="text-sm leading-7 text-gray-500">{tool.pageCopy}</p>
 					</div>
 				</div>
 
-				<div id="tool">
+				<div id="tool" class="lg:col-span-7">
 					<ToolWorkbench tool={tool} />
 				</div>
 			</div>
 		</section>
 
-		<section class="bg-slate-50 py-16 lg:py-24">
-			<div class="mx-auto max-w-7xl px-6">
-				<div class="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
-					<div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-						<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">{copy.howItWorksEyebrow}</span>
-						<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.howItWorksTitle(tool.name)}</h2>
-						<ol class="mt-8 grid gap-4 md:grid-cols-3">
+		<section class="bg-gray-50">
+			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
+				<div class="grid gap-8 lg:grid-cols-2">
+					<div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm">
+						<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.howItWorksTitle(tool.name)}</h2>
+						<p class="mb-8 text-gray-500 sm:text-xl">{copy.howItWorksEyebrow}</p>
+						<ol class="space-y-6">
 							{copy.steps.map((step, index) => (
-								<li class="rounded-[1.5rem] bg-slate-50 p-5">
-									<span class="inline-flex size-10 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">{index + 1}</span>
-									<p class="mt-4 text-lg font-bold text-slate-900">{step.title}</p>
-									<p class="mt-2 text-sm leading-7 text-slate-600">{step.description}</p>
+								<li class="flex">
+									<div class="mr-4 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-700 text-sm font-bold text-white">{index + 1}</div>
+									<div>
+										<h3 class="mb-2 text-lg font-semibold text-gray-900">{step.title}</h3>
+										<p class="text-sm leading-7 text-gray-500">{step.description}</p>
+									</div>
 								</li>
 							))}
 						</ol>
 					</div>
 
-					<div class="rounded-[2rem] bg-blue-600 p-8 text-white shadow-[0_30px_80px_-30px_rgba(37,99,235,0.55)]">
-						<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-100">{copy.adEyebrow}</span>
-						<h2 class="mt-4 text-3xl font-black md:text-4xl">{tool.name}</h2>
-						<p class="mt-4 text-base leading-8 text-blue-50">{copy.adBody}</p>
-						<div class="mt-8 rounded-[1.75rem] border border-white/15 bg-white/10 p-6">
-							<p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-100">{copy.relatedEyebrow}</p>
-							<div class="mt-4 space-y-4">
-								{related.map((relatedTool) => <ToolCard tool={relatedTool!} compact />)}
-							</div>
+					<div class="rounded-3xl bg-blue-700 p-8 text-white shadow-2xl shadow-blue-100">
+						<p class="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-blue-100">{copy.relatedEyebrow}</p>
+						<h2 class="mb-4 text-4xl font-extrabold tracking-tight">{tool.name}</h2>
+						<p class="mb-8 text-blue-50">{copy.adBody}</p>
+						<div class="space-y-4">
+							{related.map((relatedTool) => <ToolCard tool={relatedTool!} compact />)}
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<section id="faq" class="bg-white py-16 lg:py-24">
-			<div class="mx-auto max-w-4xl px-6">
-				<div class="text-center">
-					<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">FAQ</span>
-					<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.faqTitle(tool.name)}</h2>
-					<p class="mt-4 text-base leading-8 text-slate-600">{copy.faqEyebrow}</p>
+		<section id="faq" class="bg-white">
+			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
+				<div class="mx-auto mb-12 max-w-screen-md text-center">
+					<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.faqTitle(tool.name)}</h2>
+					<p class="text-gray-500 sm:text-xl">{copy.faqEyebrow}</p>
 				</div>
-				<div class="mt-12">
+				<div class="mx-auto max-w-screen-md">
 					<FaqList items={tool.faqs} />
 				</div>
 			</div>

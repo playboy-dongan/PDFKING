@@ -150,7 +150,7 @@ function setStatus(elements: WorkbenchElements, message: string) {
 function renderError(elements: WorkbenchElements, message: string) {
 	setStatus(elements, message);
 	elements.results.innerHTML = `
-		<div class="rounded-[1.4rem] border border-rose-400/20 bg-rose-400/10 p-4 text-sm text-rose-100">
+		<div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
 			${escapeHtml(message)}
 		</div>
 	`;
@@ -182,15 +182,15 @@ function renderResults(elements: WorkbenchElements, files: ResultFile[]) {
 	for (const file of files) {
 		const href = downloadUrl(file.blob);
 		const wrapper = document.createElement('div');
-		wrapper.className = 'rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-4';
+		wrapper.className = 'rounded-xl border border-gray-200 bg-gray-50 p-4';
 		wrapper.innerHTML = `
 			<div class="flex items-center justify-between gap-4">
 				<div>
-					<p class="font-semibold text-white">${escapeHtml(file.name)}</p>
-					<p class="mt-1 text-xs text-slate-400">${escapeHtml(file.description ?? bytesToSize(file.blob.size))}</p>
+					<p class="font-semibold text-gray-900">${escapeHtml(file.name)}</p>
+					<p class="mt-1 text-xs text-gray-500">${escapeHtml(file.description ?? bytesToSize(file.blob.size))}</p>
 				</div>
 				<a
-					class="rounded-full bg-cyan-300 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-cyan-200"
+					class="rounded-lg bg-blue-700 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
 					href="${href}"
 					download="${escapeHtml(file.name)}"
 				>

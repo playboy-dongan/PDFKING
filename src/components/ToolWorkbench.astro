@@ -7,13 +7,13 @@ const isZh = tool.locale === 'zh-cn';
 const acceptHint = tool.acceptHint[tool.locale];
 const copy = isZh
 	? {
-			eyebrow: '上传并处理',
+			eyebrow: '在线处理',
 			title: tool.actionLabel,
 			description: acceptHint,
 			uploadLabel: '上传文件',
-			uploadHint: tool.allowMultiple ? '可一次选择多个文件' : '当前工具一次处理一个文件',
+			uploadHint: tool.allowMultiple ? '支持一次选择多个文件' : '当前工具一次处理一个文件',
 			acceptLabel: '支持格式',
-			engineLabel: '执行引擎',
+			engineLabel: '开源引擎',
 			engineValue: tool.engineSummary,
 			previewTitle: '文件预览',
 			previewBody: '上传后会在这里显示首页预览、文档摘要或图像缩略图。',
@@ -21,7 +21,7 @@ const copy = isZh
 			resultsTitle: '处理结果',
 			resultsBody: '处理完成后，这里会出现下载按钮和结果摘要。',
 			statusTitle: '当前状态',
-			statusValue: '等待上传文件',
+			statusValue: '等待上传',
 			runLabel: tool.actionLabel,
 			multiLabel: '多文件',
 			singleLabel: '单文件',
@@ -40,15 +40,15 @@ const copy = isZh
 			ocrTxt: 'TXT 文本',
 		}
 	: {
-			eyebrow: 'Upload & Run',
+			eyebrow: 'Online processing',
 			title: tool.actionLabel,
 			description: acceptHint,
 			uploadLabel: 'Upload files',
 			uploadHint: tool.allowMultiple ? 'Multiple files are supported in one run' : 'This tool processes one file at a time',
 			acceptLabel: 'Accepted formats',
-			engineLabel: 'Execution engine',
+			engineLabel: 'Open-source engine',
 			engineValue: tool.engineSummary,
-			previewTitle: 'Preview',
+			previewTitle: 'File preview',
 			previewBody: 'The first page preview, document summary, or image thumbnail appears here after upload.',
 			previewWaiting: 'Waiting for file',
 			resultsTitle: 'Results',
@@ -82,24 +82,22 @@ const copy = isZh
 		name: tool.name,
 		actionLabel: tool.actionLabel,
 	})}
-	class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/70 shadow-[0_32px_100px_-50px_rgba(34,211,238,0.7)] backdrop-blur"
+	class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl shadow-blue-100"
 >
-	<div class="grid gap-0 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-		<div class="border-b border-white/10 bg-white/[0.04] p-6 xl:border-r xl:border-b-0 xl:p-8">
-			<div class="mb-8">
-				<p class="text-xs font-semibold uppercase tracking-[0.26em] text-cyan-200">{copy.eyebrow}</p>
-				<h2 class="mt-3 text-3xl font-black tracking-tight text-white">{copy.title}</h2>
-				<p class="mt-3 text-sm leading-7 text-slate-300">{copy.description}</p>
-			</div>
+	<div class="grid lg:grid-cols-[0.9fr_1.1fr]">
+		<div class="border-b border-gray-200 bg-gray-50 p-6 lg:border-b-0 lg:border-r lg:p-8">
+			<p class="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-blue-700">{copy.eyebrow}</p>
+			<h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900">{copy.title}</h2>
+			<p class="mb-8 text-sm leading-7 text-gray-500">{copy.description}</p>
 
 			<div class="space-y-5">
-				<div class="rounded-[1.5rem] border border-dashed border-cyan-300/35 bg-cyan-300/8 p-5">
-					<div class="mb-4 flex items-center justify-between gap-4">
+				<div class="rounded-2xl border-2 border-dashed border-blue-200 bg-white p-5">
+					<div class="mb-4 flex items-start justify-between gap-4">
 						<div>
-							<p class="text-sm font-semibold text-white">{copy.uploadLabel}</p>
-							<p class="mt-1 text-xs leading-6 text-slate-400">{copy.uploadHint}</p>
+							<p class="text-base font-semibold text-gray-900">{copy.uploadLabel}</p>
+							<p class="mt-1 text-sm text-gray-500">{copy.uploadHint}</p>
 						</div>
-						<span class="rounded-full border border-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300">
+						<span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
 							{tool.allowMultiple ? copy.multiLabel : copy.singleLabel}
 						</span>
 					</div>
@@ -108,166 +106,121 @@ const copy = isZh
 						type="file"
 						accept={tool.accept}
 						multiple={tool.allowMultiple}
-						class="block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-slate-200 file:mr-4 file:rounded-full file:border-0 file:bg-cyan-300 file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-slate-950 hover:file:bg-cyan-200 focus:outline-none"
+						class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 file:mr-4 file:border-0 file:bg-blue-700 file:px-4 file:py-3 file:text-sm file:font-medium file:text-white hover:file:bg-blue-800 focus:outline-none"
 					/>
-					<div class="mt-4 grid gap-3 sm:grid-cols-2">
-						<div class="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-							<p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">{copy.acceptLabel}</p>
-							<p class="mt-2 text-sm text-white">{tool.accept.replaceAll(',', ' · ')}</p>
-						</div>
-						<div class="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-							<p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">{copy.engineLabel}</p>
-							<p class="mt-2 text-sm leading-6 text-white">{copy.engineValue}</p>
-						</div>
+				</div>
+
+				<div class="grid gap-4 sm:grid-cols-2">
+					<div class="rounded-xl border border-gray-200 bg-white p-4">
+						<p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">{copy.acceptLabel}</p>
+						<p class="text-sm font-medium text-gray-900">{tool.accept.replaceAll(',', ' / ')}</p>
+					</div>
+					<div class="rounded-xl border border-gray-200 bg-white p-4">
+						<p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">{copy.engineLabel}</p>
+						<p class="text-sm leading-6 text-gray-600">{copy.engineValue}</p>
 					</div>
 				</div>
 
 				{tool.slug === 'split-pdf' && (
-					<label class="block rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
-						<span class="text-sm font-semibold text-white">{copy.rangeLabel}</span>
-						<input
-							data-role="ranges"
-							type="text"
-							value="1-2,4"
-							class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-slate-500 focus:border-cyan-300"
-						/>
-						<span class="mt-2 block text-xs leading-6 text-slate-400">{copy.rangeHint}</span>
+					<label class="block rounded-2xl border border-gray-200 bg-white p-5">
+						<span class="text-sm font-semibold text-gray-900">{copy.rangeLabel}</span>
+						<input data-role="ranges" type="text" value="1-2,4" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
+						<span class="mt-2 block text-xs leading-6 text-gray-500">{copy.rangeHint}</span>
 					</label>
 				)}
 
 				{tool.slug === 'compress-pdf' && (
-					<label class="block rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
-						<div class="flex items-center justify-between gap-4">
-							<span class="text-sm font-semibold text-white">{copy.qualityLabel}</span>
-							<span class="rounded-full bg-white/8 px-3 py-1 text-xs font-semibold text-cyan-200">JPEG</span>
-						</div>
-						<input data-role="quality" type="range" min="0.35" max="0.9" step="0.05" value="0.7" class="mt-4 block w-full accent-cyan-300" />
-						<span class="mt-2 block text-xs leading-6 text-slate-400">{copy.qualityHint}</span>
+					<label class="block rounded-2xl border border-gray-200 bg-white p-5">
+						<span class="text-sm font-semibold text-gray-900">{copy.qualityLabel}</span>
+						<input data-role="quality" type="range" min="0.35" max="0.9" step="0.05" value="0.7" class="mt-4 block w-full accent-blue-700" />
+						<span class="mt-2 block text-xs leading-6 text-gray-500">{copy.qualityHint}</span>
 					</label>
 				)}
 
 				{tool.slug === 'pdf-watermark' && (
-					<div class="grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
+					<div class="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5">
 						<label class="block">
-							<span class="text-sm font-semibold text-white">{copy.watermarkTextLabel}</span>
-							<input
-								data-role="watermark-text"
-								type="text"
-								value="PDFKing"
-								class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-							/>
+							<span class="text-sm font-semibold text-gray-900">{copy.watermarkTextLabel}</span>
+							<input data-role="watermark-text" type="text" value="PDFKING" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
 						</label>
 						<label class="block">
-							<span class="text-sm font-semibold text-white">{copy.watermarkOpacityLabel}</span>
-							<input data-role="watermark-opacity" type="range" min="0.08" max="0.45" step="0.02" value="0.18" class="mt-3 block w-full accent-cyan-300" />
+							<span class="text-sm font-semibold text-gray-900">{copy.watermarkOpacityLabel}</span>
+							<input data-role="watermark-opacity" type="range" min="0.08" max="0.45" step="0.02" value="0.18" class="mt-3 block w-full accent-blue-700" />
 						</label>
 					</div>
 				)}
 
 				{tool.slug === 'rotate-pdf' && (
-					<label class="block rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
-						<span class="text-sm font-semibold text-white">{copy.rotationLabel}</span>
-						<select
-							data-role="rotation"
-							class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-						>
-							<option value="90">90°</option>
-							<option value="180">180°</option>
-							<option value="270">270°</option>
+					<label class="block rounded-2xl border border-gray-200 bg-white p-5">
+						<span class="text-sm font-semibold text-gray-900">{copy.rotationLabel}</span>
+						<select data-role="rotation" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600">
+							<option value="90">90 deg</option>
+							<option value="180">180 deg</option>
+							<option value="270">270 deg</option>
 						</select>
 					</label>
 				)}
 
 				{tool.slug === 'protect-pdf' && (
-					<div class="grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
+					<div class="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5">
 						<label class="block">
-							<span class="text-sm font-semibold text-white">{copy.openPasswordLabel}</span>
-							<input
-								data-role="user-password"
-								type="password"
-								class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-							/>
+							<span class="text-sm font-semibold text-gray-900">{copy.openPasswordLabel}</span>
+							<input data-role="user-password" type="password" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
 						</label>
 						<label class="block">
-							<span class="text-sm font-semibold text-white">{copy.ownerPasswordLabel}</span>
-							<input
-								data-role="owner-password"
-								type="password"
-								class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-							/>
+							<span class="text-sm font-semibold text-gray-900">{copy.ownerPasswordLabel}</span>
+							<input data-role="owner-password" type="password" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
 						</label>
 					</div>
 				)}
 
 				{tool.slug === 'unlock-pdf' && (
-					<label class="block rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
-						<span class="text-sm font-semibold text-white">{copy.unlockPasswordLabel}</span>
-						<input
-							data-role="unlock-password"
-							type="password"
-							class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-						/>
+					<label class="block rounded-2xl border border-gray-200 bg-white p-5">
+						<span class="text-sm font-semibold text-gray-900">{copy.unlockPasswordLabel}</span>
+						<input data-role="unlock-password" type="password" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
 					</label>
 				)}
 
 				{tool.slug === 'ocr-pdf' && (
-					<label class="block rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
-						<span class="text-sm font-semibold text-white">{copy.ocrFormatLabel}</span>
-						<select
-							data-role="ocr-format"
-							class="mt-3 block w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 focus:border-cyan-300"
-						>
+					<label class="block rounded-2xl border border-gray-200 bg-white p-5">
+						<span class="text-sm font-semibold text-gray-900">{copy.ocrFormatLabel}</span>
+						<select data-role="ocr-format" class="mt-3 block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600">
 							<option value="docx">{copy.ocrDocx}</option>
 							<option value="txt">{copy.ocrTxt}</option>
 						</select>
 					</label>
 				)}
 
-				<button
-					data-role="run-button"
-					type="button"
-					class="inline-flex w-full items-center justify-center rounded-[1.25rem] bg-gradient-to-r from-cyan-300 via-sky-300 to-teal-200 px-5 py-4 text-sm font-black uppercase tracking-[0.2em] text-slate-950 transition hover:scale-[1.01] hover:shadow-[0_20px_55px_-25px_rgba(103,232,249,0.9)]"
-				>
+				<button data-role="run-button" type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-3.5 text-base font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
 					{copy.runLabel}
 				</button>
 			</div>
 		</div>
 
-		<div class="bg-[linear-gradient(180deg,rgba(15,23,42,0.9),rgba(2,6,23,0.95))] p-6 xl:p-8">
-			<div class="grid gap-5">
-				<div class="rounded-[1.75rem] border border-white/8 bg-white/[0.03] p-5">
-					<div class="flex items-center justify-between gap-4">
-						<div>
-							<p class="text-sm font-semibold text-white">{copy.previewTitle}</p>
-							<p class="mt-1 text-xs leading-6 text-slate-400">{copy.previewBody}</p>
-						</div>
-						<span data-role="preview-label" class="rounded-full border border-white/10 px-3 py-1 text-xs font-semibold text-cyan-200">
-							{copy.previewWaiting}
-						</span>
-					</div>
-					<div
-						data-role="preview"
-						class="mt-5 flex min-h-72 items-center justify-center rounded-[1.5rem] border border-dashed border-white/12 bg-slate-900/70 p-6 text-center text-sm leading-7 text-slate-400"
-					>
-						{copy.previewBody}
-					</div>
+		<div class="p-6 lg:p-8">
+			<div class="mb-5 flex items-center justify-between">
+				<div>
+					<p class="text-base font-semibold text-gray-900">{copy.previewTitle}</p>
+					<p class="mt-1 text-sm text-gray-500">{copy.previewBody}</p>
 				</div>
+				<span data-role="preview-label" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">{copy.previewWaiting}</span>
+			</div>
+			<div data-role="preview" class="flex min-h-80 items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm leading-7 text-gray-500">
+				{copy.previewBody}
+			</div>
 
-				<div class="rounded-[1.75rem] border border-white/8 bg-white/[0.03] p-5">
-					<div class="flex items-center justify-between gap-4">
-						<div>
-							<p class="text-sm font-semibold text-white">{copy.statusTitle}</p>
-							<p class="mt-1 text-xs leading-6 text-slate-400">{copy.resultsBody}</p>
-						</div>
-						<span data-role="status" class="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
-							{copy.statusValue}
-						</span>
+			<div class="mt-6 rounded-2xl border border-gray-200 bg-white p-5">
+				<div class="mb-4 flex items-center justify-between gap-4">
+					<div>
+						<p class="text-base font-semibold text-gray-900">{copy.statusTitle}</p>
+						<p class="mt-1 text-sm text-gray-500">{copy.resultsBody}</p>
 					</div>
-					<div data-role="results" class="mt-5 grid gap-3">
-						<div class="rounded-[1.4rem] border border-dashed border-white/12 bg-slate-900/70 p-6 text-sm leading-7 text-slate-400">
-							<p class="font-semibold text-white">{copy.resultsTitle}</p>
-							<p class="mt-2">{copy.resultsBody}</p>
-						</div>
+					<span data-role="status" class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">{copy.statusValue}</span>
+				</div>
+				<div data-role="results" class="grid gap-3">
+					<div class="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-5 text-sm leading-7 text-gray-500">
+						<p class="font-semibold text-gray-900">{copy.resultsTitle}</p>
+						<p class="mt-1">{copy.resultsBody}</p>
 					</div>
 				</div>
 			</div>
