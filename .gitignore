@@ -25,6 +25,7 @@ pnpm-debug.log*
 
 # local preview logs
 .preview*.log
+.tmp/
 
 # local tooling
 .wrangler/

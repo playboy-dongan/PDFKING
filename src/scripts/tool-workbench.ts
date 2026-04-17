@@ -156,6 +156,17 @@ function renderError(elements: WorkbenchElements, message: string) {
 	`;
 }
 
+function renderPreviewError(elements: WorkbenchElements, message: string) {
+	const t = i18n(elements.tool.locale);
+	elements.preview.innerHTML = `
+		<div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-800">
+			${escapeHtml(message)}
+		</div>
+	`;
+	elements.previewLabel.textContent = t.previewError;
+	setStatus(elements, t.fileSelected(elements.fileInput.files?.length ?? 0));
+}
+
 function bytesToSize(bytes: number) {
 	if (bytes < 1024) return `${bytes} B`;
 	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -427,35 +438,39 @@ async function pdfToWord(file: File) {
 }
 
 async function wordToPdf(file: File) {
-	const previewWrapper = document.createElement('div');
-	previewWrapper.style.position = 'fixed';
-	previewWrapper.style.left = '-9999px';
-	previewWrapper.style.top = '0';
-	previewWrapper.style.width = '900px';
-	previewWrapper.style.padding = '40px';
-	previewWrapper.style.background = '#ffffff';
-	previewWrapper.style.color = '#0f172a';
-	previewWrapper.style.fontFamily = 'Georgia, serif';
-	previewWrapper.style.lineHeight = '1.7';
+	const { value } = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+	const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+	const margin = 54;
+	const lineHeight = 18;
+	const pageWidth = pdf.internal.pageSize.getWidth();
+	const pageHeight = pdf.internal.pageSize.getHeight();
+	const maxWidth = pageWidth - margin * 2;
+	const paragraphs = (value || 'No text content found in this DOCX file.')
+		.replace(/\r\n/g, '\n')
+		.split(/\n{2,}/)
+		.map((paragraph) => paragraph.replace(/\n/g, ' ').trim())
+		.filter(Boolean);
 
-	const { value } = await mammoth.convertToHtml({ arrayBuffer: await file.arrayBuffer() });
-	previewWrapper.innerHTML = value || '<p>No content found in this DOCX file.</p>';
-	document.body.appendChild(previewWrapper);
+	pdf.setProperties({ title: normalizeName(file.name, '.pdf') });
+	pdf.setFont('helvetica', 'normal');
+	pdf.setFontSize(12);
+	pdf.setTextColor(15, 23, 42);
 
-	try {
-		const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-		await pdf.html(previewWrapper, {
-			x: 24,
-			y: 24,
-			width: 545,
-			windowWidth: 900,
-			autoPaging: 'text',
-			margin: [24, 24, 24, 24],
-		});
-		return pdf.output('blob');
-	} finally {
-		document.body.removeChild(previewWrapper);
+	let y = margin;
+	for (const paragraph of paragraphs) {
+		const lines = pdf.splitTextToSize(paragraph, maxWidth) as string[];
+		for (const line of lines) {
+			if (y > pageHeight - margin) {
+				pdf.addPage();
+				y = margin;
+			}
+			pdf.text(line, margin, y);
+			y += lineHeight;
+		}
+		y += lineHeight * 0.5;
 	}
+
+	return pdf.output('blob');
 }
 
 async function ocrImageBlob(blob: Blob) {
@@ -539,7 +554,7 @@ async function unlockPdf(file: File, password: string) {
 		throw new Error('Current password is required to unlock the PDF.');
 	}
 
-	return runQpdf([`--password=${password}`, '--decrypt', '__INPUT__', '__OUTPUT__'], file);
+	return runQpdf([`--password=${password}`, '__INPUT__', '--decrypt', '__OUTPUT__'], file);
 }
 
 async function handleRun(elements: WorkbenchElements) {
@@ -621,7 +636,7 @@ function setupWorkbench(container: HTMLElement) {
 			await renderPreview(elements);
 			setStatus(elements, t.fileSelected(elements.fileInput.files?.length ?? 0));
 		} catch (error) {
-			renderError(elements, error instanceof Error ? error.message : t.previewError);
+			renderPreviewError(elements, error instanceof Error ? error.message : t.previewError);
 		}
 	});
 
