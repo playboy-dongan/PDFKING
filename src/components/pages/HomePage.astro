@@ -96,12 +96,12 @@ const workflowTools = tools.slice(6, 10);
 							</div>
 							<div class="mt-6 grid gap-3">
 								{featuredTools.slice(0, 4).map((tool) => (
-									<a href={tool.path} class="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 hover:border-blue-200 hover:bg-blue-50">
+									<a href={tool.path} class="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 transition duration-200 hover:border-gray-300 hover:shadow-sm">
 										<div>
 											<p class="text-sm font-semibold text-gray-900">{tool.name}</p>
 											<p class="text-xs text-gray-500">{tool.categoryLabel}</p>
 										</div>
-										<span class="text-sm font-semibold text-blue-700">Open</span>
+										<span class="text-sm font-semibold text-slate-600">Open</span>
 									</a>
 								))}
 							</div>
@@ -115,7 +115,7 @@ const workflowTools = tools.slice(6, 10);
 			<div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6">
 				<div class="grid grid-cols-2 gap-8 text-gray-500 sm:grid-cols-3 lg:grid-cols-6">
 					{tools.slice(0, 6).map((tool) => (
-						<a href={tool.path} class="flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-center text-sm font-semibold text-gray-700 hover:border-blue-200 hover:text-blue-700">
+						<a href={tool.path} class="flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-center text-sm font-semibold text-gray-700 transition duration-200 hover:border-gray-300 hover:bg-white hover:text-gray-950">
 							{tool.name}
 						</a>
 					))}
