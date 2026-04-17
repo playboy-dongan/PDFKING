@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap");
 @import "tailwindcss";
+@import "./browserbound-dashboard.css";
 @source "../**/*.{astro,html,js,ts}";
 @source "../../node_modules/flowbite/**/*.js";
 
