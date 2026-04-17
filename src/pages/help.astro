@@ -1,0 +1,8 @@
+---
+import UtilityPage from '../components/pages/UtilityPage.astro';
+import { defaultLocale } from '../data/tools';
+
+export const prerender = true;
+---
+
+<UtilityPage locale={defaultLocale} kind="help" />

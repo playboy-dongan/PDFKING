@@ -1,12 +1,10 @@
 ---
-import FaqList from '../FaqList.astro';
 import LanguageSwitcher from '../LanguageSwitcher.astro';
 import Layout from '../../layouts/Layout.astro';
 import {
 	buildHomeSchema,
 	getAlternates,
 	getCategoryCards,
-	getHomeCopy,
 	getHomeSeo,
 	getLocaleMeta,
 	getLocalePath,
@@ -15,45 +13,47 @@ import {
 } from '../../data/tools';
 
 const { locale } = Astro.props as { locale: Locale };
-const copy = getHomeCopy(locale);
 const seo = getHomeSeo(locale);
 const categories = getCategoryCards(locale);
 const tools = getTools(locale);
 const localeMeta = getLocaleMeta(locale);
 const alternates = getAlternates().map((item) => ({ hreflang: item.hreflang, href: new URL(item.href, Astro.site ?? Astro.url.origin).href }));
 const schema = buildHomeSchema(locale, Astro.url.href);
-const categoryGroups = categories.map((category) => ({
+const categoryGroups = categories.map((category, index) => ({
 	...category,
+	id: `category-${index}`,
 	tools: tools.filter((tool) => category.slugs.includes(tool.slug)),
 }));
+const toolCategoryIds = Object.fromEntries(categoryGroups.flatMap((category) => category.tools.map((tool) => [tool.slug, category.id])));
+const routePrefix = locale === 'zh-cn' ? '' : `/${locale}`;
 const ui = locale === 'zh-cn'
 	? {
 			home: '首页',
-			dashboard: '全部 PDF 工具',
-			dashboardTitle: 'PDF 工具控制台',
-			dashboardDescription: `在一个页面浏览全部 ${tools.length} 个 PDF 工具。合并、拆分、压缩、转换、OCR、水印、解锁、加密和旋转都集中在这里。`,
-			search: '搜索 PDF 工具...',
+			title: '全部 PDF 工具控制台',
+			description: `在一个页面浏览全部 ${tools.length} 个 PDF 工具。合并、拆分、压缩、转换、OCR、水印、解锁、加密和旋转都集中在这里。`,
+			search: '搜索全部 PDF 工具...',
 			allTools: '全部工具',
-			new: '可用',
+			live: '可用',
 			toolsGroup: '工具',
 			moreGroup: '更多',
-			seoBlock: 'SEO 说明',
-			adBlock: '广告位预留',
-			open: '打开',
+			help: '帮助',
+			settings: '设置',
+			tagline: '本地优先 PDF 工具',
+			noResults: '没有匹配的工具',
 		}
 	: {
 			home: 'Home',
-			dashboard: 'All PDF Tools',
-			dashboardTitle: 'All PDF Tools Dashboard',
-			dashboardDescription: `Browse all ${tools.length} PDF tools in one place. Merge, split, compress, convert, OCR, watermark, unlock, protect, and rotate workflows are grouped here.`,
-			search: 'Search PDF tools...',
+			title: 'All PDF Tools Dashboard',
+			description: `Browse all ${tools.length} PDF tools in one place. Merge, split, compress, convert, OCR, watermark, unlock, protect, and rotate workflows are grouped here.`,
+			search: 'Search all PDF tools...',
 			allTools: 'All Tools',
-			new: 'Live',
+			live: 'Live',
 			toolsGroup: 'Tools',
 			moreGroup: 'More',
-			seoBlock: 'SEO Notes',
-			adBlock: 'Ad Slot Reserved',
-			open: 'Open',
+			help: 'Help',
+			settings: 'Settings',
+			tagline: 'Local-first PDF tools',
+			noResults: 'No tools matched',
 		};
 ---
 
@@ -70,7 +70,7 @@ const ui = locale === 'zh-cn'
 				<img src="/pdfking-logo.svg" alt="PDFKING logo" class="size-10 rounded-md bg-white p-1" />
 				<div class="min-w-0">
 					<p class="truncate text-sm font-semibold">PDFKING</p>
-					<p class="truncate text-xs text-white/55">Browser-first PDF tools</p>
+					<p class="truncate text-xs text-white/55">{ui.tagline}</p>
 				</div>
 			</div>
 
@@ -78,15 +78,18 @@ const ui = locale === 'zh-cn'
 				<div>
 					<p class="mb-2 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/42">{ui.toolsGroup}</p>
 					<div class="grid gap-1">
-						<a href={getLocalePath(locale)} class="flex h-9 items-center gap-3 rounded-md bg-white/12 px-2 font-medium text-white">
-							<span class="inline-flex size-5 items-center justify-center rounded bg-[var(--accent)] text-[10px] font-bold text-[var(--accent-ink)]">P</span>
-							<span>{ui.dashboard}</span>
-						</a>
+						<button type="button" data-dashboard-filter="all" class="flex h-9 w-full items-center justify-between gap-3 rounded-md bg-white/12 px-2 text-left font-medium text-white">
+							<span class="flex min-w-0 items-center gap-3">
+								<span class="inline-flex size-5 shrink-0 items-center justify-center rounded bg-[var(--accent)] text-[10px] font-bold text-[var(--accent-ink)]">P</span>
+								<span class="truncate">{ui.allTools}</span>
+							</span>
+							<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-white/72">{tools.length}</span>
+						</button>
 						{categoryGroups.map((category) => (
-							<a href={`#${category.name.toLowerCase().replaceAll(' ', '-')}`} class="flex h-9 items-center justify-between gap-3 rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">
-								<span>{category.name}</span>
+							<button type="button" data-dashboard-filter={category.id} class="flex h-9 w-full items-center justify-between gap-3 rounded-md px-2 text-left font-medium text-white/72 transition hover:bg-white/10 hover:text-white">
+								<span class="truncate">{category.name}</span>
 								<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-white/58">{category.tools.length}</span>
-							</a>
+							</button>
 						))}
 					</div>
 				</div>
@@ -94,8 +97,8 @@ const ui = locale === 'zh-cn'
 				<div class="mt-auto">
 					<p class="mb-2 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/42">{ui.moreGroup}</p>
 					<div class="grid gap-1">
-						<a href="#faq" class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{copy.nav.faq}</a>
-						<a href="#seo" class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{ui.seoBlock}</a>
+						<a href={`${routePrefix}/help/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{ui.help}</a>
+						<a href={`${routePrefix}/settings/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{ui.settings}</a>
 					</div>
 				</div>
 			</nav>
@@ -118,34 +121,40 @@ const ui = locale === 'zh-cn'
 			<main class="h-[calc(100vh-4rem)] overflow-y-auto bg-[var(--paper)]">
 				<div class="mx-auto min-h-screen max-w-[1600px] space-y-8 p-6 md:p-12">
 					<section class="space-y-4 text-center">
-						<h1 class="text-4xl font-bold tracking-tight text-[var(--ink)] md:text-5xl">{ui.dashboardTitle}</h1>
-						<p class="mx-auto max-w-2xl text-lg leading-8 text-[var(--muted)]">{ui.dashboardDescription}</p>
+						<h1 class="text-4xl font-bold tracking-tight text-[var(--ink)]">{ui.title}</h1>
+						<p class="mx-auto max-w-2xl text-lg leading-8 text-[var(--muted)]">{ui.description}</p>
 					</section>
 
 					<div class="flex justify-center">
 						<div class="relative w-full max-w-xl">
 							<svg class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[var(--faint)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
-							<input type="text" class="h-12 w-full rounded-full border border-[var(--line)] bg-white pl-12 pr-5 text-base text-[var(--ink)] shadow-sm outline-none transition focus:border-[var(--line-strong)]" placeholder={ui.search} />
+							<input data-dashboard-search type="text" class="h-12 w-full rounded-full border border-[var(--line)] bg-white pl-12 pr-5 text-base text-[var(--ink)] shadow-sm outline-none transition focus:border-[var(--line-strong)]" placeholder={ui.search} />
 						</div>
 					</div>
 
 					<div class="flex flex-wrap justify-center gap-3">
-						<a href="#all-tools" class="flex h-10 items-center gap-2 rounded-full border border-[var(--ink)] bg-[var(--ink)] px-5 text-sm font-medium text-white transition">
+						<button type="button" data-dashboard-filter="all" class="flex h-10 items-center gap-2 rounded-full border border-[var(--ink)] bg-[var(--ink)] px-5 text-sm font-medium text-white transition">
 							{ui.allTools}
 							<span class="rounded-full bg-white/15 px-1.5 py-0.5 text-xs text-white">{tools.length}</span>
-						</a>
+						</button>
 						{categoryGroups.map((category) => (
-							<a href={`#${category.name.toLowerCase().replaceAll(' ', '-')}`} class="flex h-10 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-5 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--ink)] hover:bg-[var(--ink)] hover:text-white">
+							<button type="button" data-dashboard-filter={category.id} class="flex h-10 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-5 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--ink)] hover:bg-[var(--ink)] hover:text-white">
 								{category.name}
 								<span class="rounded-full bg-[var(--paper)] px-1.5 py-0.5 text-xs text-[var(--muted)]">{category.tools.length}</span>
-							</a>
+							</button>
 						))}
 					</div>
 
-					<section id="all-tools" class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+					<section data-dashboard-grid class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 						{tools.map((tool) => (
-							<a class="group relative flex h-full min-h-56 flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-lg" href={tool.path}>
-								<span class="absolute right-4 top-4 inline-flex h-5 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--accent-soft)] px-2 text-[10px] font-bold uppercase text-[var(--accent-ink)]">{ui.new}</span>
+							<a
+								data-dashboard-card
+								data-category={toolCategoryIds[tool.slug]}
+								data-search={`${tool.name} ${tool.slug} ${tool.categoryLabel} ${tool.cardDescription}`.toLowerCase()}
+								class="group relative flex h-full min-h-56 flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-lg"
+								href={tool.path}
+							>
+								<span class="absolute right-4 top-4 inline-flex h-5 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--accent-soft)] px-2 text-[10px] font-bold uppercase text-[var(--accent-ink)]">{ui.live}</span>
 								<div class="mb-4 flex size-12 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-lg font-bold text-[var(--ink)] transition-transform duration-300 group-hover:scale-110">
 									{tool.name.slice(0, 1)}
 								</div>
@@ -155,55 +164,50 @@ const ui = locale === 'zh-cn'
 						))}
 					</section>
 
-					{categoryGroups.map((category) => (
-						<section id={category.name.toLowerCase().replaceAll(' ', '-')} class="space-y-4">
-							<div class="flex items-end justify-between gap-4">
-								<div>
-									<h2 class="text-2xl font-bold tracking-tight text-[var(--ink)]">{category.name}</h2>
-									<p class="mt-2 text-sm leading-6 text-[var(--muted)]">{category.description}</p>
-								</div>
-								<span class="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs font-medium text-[var(--muted)]">{category.tools.length}</span>
-							</div>
-							<div class="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-								{category.tools.map((tool) => (
-									<a class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-lg" href={tool.path}>
-										<div class="mb-4 flex size-12 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-lg font-bold text-[var(--ink)] transition-transform duration-300 group-hover:scale-110">
-											{tool.name.slice(0, 1)}
-										</div>
-										<h3 class="mb-2 text-lg font-medium text-[var(--ink)]">{tool.name}</h3>
-										<p class="line-clamp-3 text-sm leading-6 text-[var(--muted)]">{tool.metaDescription}</p>
-									</a>
-								))}
-							</div>
-						</section>
-					))}
-
-					<section id="seo" class="grid gap-4 lg:grid-cols-[1fr_0.72fr]">
-						<div class="rounded-2xl border border-[var(--line)] bg-white p-6">
-							<p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.seo.eyebrow}</p>
-							<h2 class="text-2xl font-bold tracking-tight text-[var(--ink)]">{copy.seo.title}</h2>
-							<div class="mt-4 grid gap-4 text-sm leading-7 text-[var(--muted)]">
-								{copy.seo.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-							</div>
-						</div>
-						<div class="rounded-2xl border border-[var(--line)] bg-white p-6">
-							<p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.ads.eyebrow}</p>
-							<h2 class="text-2xl font-bold tracking-tight text-[var(--ink)]">{copy.ads.title}</h2>
-							<ul class="mt-4 grid gap-3 text-sm leading-6 text-[var(--muted)]">
-								{copy.ads.items.map((item) => <li class="rounded-xl border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-3">{item}</li>)}
-							</ul>
-						</div>
-					</section>
-
-					<section id="faq" class="grid gap-6 lg:grid-cols-[0.62fr_1fr]">
-						<div>
-							<p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.faq.eyebrow}</p>
-							<h2 class="text-2xl font-bold tracking-tight text-[var(--ink)]">{copy.faq.title}</h2>
-						</div>
-						<FaqList items={copy.faq.items} />
-					</section>
+					<p data-dashboard-empty class="hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-center text-sm font-medium text-[var(--muted)]">{ui.noResults}</p>
 				</div>
 			</main>
 		</div>
 	</div>
 </Layout>
+
+<script>
+	const search = document.querySelector<HTMLInputElement>('[data-dashboard-search]');
+	const cards = [...document.querySelectorAll<HTMLElement>('[data-dashboard-card]')];
+	const filters = [...document.querySelectorAll<HTMLButtonElement>('[data-dashboard-filter]')];
+	const empty = document.querySelector<HTMLElement>('[data-dashboard-empty]');
+	let activeFilter = 'all';
+
+	function setFilterButtonState() {
+		for (const button of filters) {
+			const active = button.dataset.dashboardFilter === activeFilter;
+			button.classList.toggle('bg-[var(--ink)]', active);
+			button.classList.toggle('text-white', active);
+			button.classList.toggle('border-[var(--ink)]', active);
+		}
+	}
+
+	function updateCards() {
+		const query = (search?.value ?? '').trim().toLowerCase();
+		let visibleCount = 0;
+		for (const card of cards) {
+			const categoryMatch = activeFilter === 'all' || card.dataset.category === activeFilter;
+			const searchMatch = !query || (card.dataset.search ?? '').includes(query);
+			const visible = categoryMatch && searchMatch;
+			card.classList.toggle('hidden', !visible);
+			if (visible) visibleCount += 1;
+		}
+		empty?.classList.toggle('hidden', visibleCount !== 0);
+	}
+
+	for (const button of filters) {
+		button.addEventListener('click', () => {
+			activeFilter = button.dataset.dashboardFilter ?? 'all';
+			setFilterButtonState();
+			updateCards();
+		});
+	}
+	search?.addEventListener('input', updateCards);
+	setFilterButtonState();
+	updateCards();
+</script>
