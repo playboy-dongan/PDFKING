@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pdfking.example/sitemap-index.xml

@@ -1,0 +1,257 @@
+---
+import FaqList from '../FaqList.astro';
+import LanguageSwitcher from '../LanguageSwitcher.astro';
+import Layout from '../../layouts/Layout.astro';
+import ToolCard from '../ToolCard.astro';
+import {
+	buildHomeSchema,
+	getAlternates,
+	getCategoryCards,
+	getHomeCopy,
+	getHomeSeo,
+	getLocaleMeta,
+	getLocalePath,
+	getTools,
+	type Locale,
+} from '../../data/tools';
+
+const { locale } = Astro.props as { locale: Locale };
+const copy = getHomeCopy(locale);
+const seo = getHomeSeo(locale);
+const categories = getCategoryCards(locale);
+const tools = getTools(locale);
+const localeMeta = getLocaleMeta(locale);
+const alternates = getAlternates().map((item) => ({ hreflang: item.hreflang, href: new URL(item.href, Astro.site ?? Astro.url.origin).href }));
+const schema = buildHomeSchema(locale, Astro.url.href);
+const featuredTools = tools.slice(0, 4);
+const aboutTools = tools.slice(4, 7);
+---
+
+<Layout
+	title={seo.title}
+	description={seo.description}
+	schema={schema}
+	lang={localeMeta.htmlLang}
+	alternates={alternates}
+>
+	<header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+		<div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+			<a href={getLocalePath(locale)} class="flex items-center gap-3 text-lg font-bold text-slate-900">
+				<span class="inline-flex size-10 items-center justify-center rounded-xl bg-slate-900 text-sm font-black tracking-[0.25em] text-white">PK</span>
+				<span>PDFKing</span>
+			</a>
+			<nav class="hidden items-center gap-8 text-sm font-medium text-slate-600 lg:flex">
+				<a href="#home" class="transition hover:text-slate-900">Home</a>
+				<a href="#features" class="transition hover:text-slate-900">{copy.nav.allTools}</a>
+				<a href="#about" class="transition hover:text-slate-900">{copy.nav.categories}</a>
+				<a href="#faq" class="transition hover:text-slate-900">{copy.nav.faq}</a>
+			</nav>
+			<div class="flex items-center gap-3">
+				<LanguageSwitcher locale={locale} />
+				<a href={getLocalePath(locale, 'merge-pdf')} class="hidden rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 md:inline-flex">
+					{copy.nav.start}
+				</a>
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<section id="home" class="overflow-hidden bg-white pb-16 pt-12 lg:pb-24 lg:pt-20">
+			<div class="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[1.02fr_0.98fr]">
+				<div>
+					<span class="mb-6 inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">{copy.hero.badge}</span>
+					<h1 class="max-w-3xl text-4xl font-black leading-tight tracking-tight text-slate-900 md:text-5xl xl:text-6xl">
+						{copy.hero.title}
+					</h1>
+					<p class="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">{copy.hero.description}</p>
+					<div class="mt-10 flex flex-wrap gap-4">
+						<a href={getLocalePath(locale, 'merge-pdf')} class="rounded-lg bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+							{copy.hero.primary}
+						</a>
+						<a href={getLocalePath(locale, 'pdf-to-word')} class="rounded-lg border border-slate-200 px-7 py-3.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">
+							{copy.hero.secondary}
+						</a>
+					</div>
+					<div class="mt-10 flex flex-wrap gap-3">
+						{copy.hero.pills.map((pill) => (
+							<span class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600">{pill}</span>
+						))}
+					</div>
+				</div>
+
+				<div class="relative">
+					<div class="absolute -left-6 top-8 h-64 w-64 rounded-full bg-blue-100 blur-3xl"></div>
+					<div class="absolute -bottom-10 right-0 h-72 w-72 rounded-full bg-cyan-100 blur-3xl"></div>
+					<div class="relative rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.18)]">
+						<div class="flex items-center justify-between border-b border-slate-100 pb-4">
+							<div>
+								<p class="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">{copy.stack.eyebrow}</p>
+								<h2 class="mt-2 text-2xl font-bold text-slate-900">{copy.stack.title}</h2>
+							</div>
+							<span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">{copy.stack.adSlot}</span>
+						</div>
+						<div class="mt-6 grid gap-4 sm:grid-cols-2">
+							{copy.stack.items.map((item) => (
+								<div class="rounded-2xl bg-slate-50 p-5">
+									<h3 class="text-lg font-semibold text-slate-900">{item.title}</h3>
+									<p class="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+								</div>
+							))}
+						</div>
+						<div class="mt-6 grid gap-4 sm:grid-cols-2">
+							<div class="rounded-2xl bg-slate-900 p-5 text-white">
+								<p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">Cloudflare</p>
+								<p class="mt-3 text-3xl font-black">Workers</p>
+								<p class="mt-2 text-sm leading-7 text-slate-300">{copy.footer.description}</p>
+							</div>
+							<div class="rounded-2xl border border-slate-200 p-5">
+								<p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">SEO</p>
+								<p class="mt-3 text-3xl font-black text-slate-900">{tools.length}</p>
+								<p class="mt-2 text-sm leading-7 text-slate-600">{copy.tools.description}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="features" class="bg-slate-50 py-16 lg:py-24">
+			<div class="mx-auto max-w-7xl px-6">
+				<div class="mx-auto max-w-3xl text-center">
+					<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">Features</span>
+					<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.tools.title}</h2>
+					<p class="mt-4 text-base leading-8 text-slate-600">{copy.tools.description}</p>
+				</div>
+				<div class="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+					{featuredTools.map((tool) => <ToolCard tool={tool} />)}
+				</div>
+				<div class="mt-8 text-center">
+					<a href="#all-tools" class="inline-flex rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+						{copy.nav.allTools}
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="about" class="bg-white py-16 lg:py-24">
+			<div class="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[0.95fr_1.05fr]">
+				<div class="grid gap-5 sm:grid-cols-2">
+					{aboutTools.map((tool, index) => (
+						<div class:list={['rounded-[1.75rem] border p-6 shadow-sm', index === 1 ? 'border-blue-200 bg-blue-50 sm:translate-y-8' : 'border-slate-200 bg-white']}>
+							<p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">{tool.categoryLabel}</p>
+							<h3 class="mt-3 text-xl font-bold text-slate-900">{tool.name}</h3>
+							<p class="mt-3 text-sm leading-7 text-slate-600">{tool.cardDescription}</p>
+						</div>
+					))}
+					<div class="rounded-[1.75rem] border border-slate-200 bg-slate-900 p-6 text-white sm:col-span-2">
+						<p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">{copy.categories.eyebrow}</p>
+						<h3 class="mt-3 text-2xl font-bold">{copy.categories.title}</h3>
+						<p class="mt-3 text-sm leading-7 text-slate-300">{copy.seo.paragraphs[0]}</p>
+					</div>
+				</div>
+
+				<div>
+					<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">About</span>
+					<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.seo.title}</h2>
+					<div class="mt-6 space-y-5 text-base leading-8 text-slate-600">
+						{copy.seo.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+					</div>
+					<div class="mt-10 grid gap-4 sm:grid-cols-2">
+						{categories.map((category) => (
+							<div class="rounded-2xl border border-slate-200 p-5">
+								<h3 class="text-lg font-bold text-slate-900">{category.name}</h3>
+								<p class="mt-2 text-sm leading-7 text-slate-600">{category.description}</p>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-slate-900 py-16 lg:py-24">
+			<div class="mx-auto max-w-7xl px-6">
+				<div class="overflow-hidden rounded-[2.25rem] bg-blue-600 px-8 py-10 text-white shadow-[0_30px_80px_-30px_rgba(37,99,235,0.55)] lg:px-12 lg:py-14">
+					<div class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+						<div>
+							<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-100">{copy.ads.eyebrow}</span>
+							<h2 class="mt-4 text-3xl font-black md:text-4xl">{copy.ads.title}</h2>
+							<p class="mt-4 max-w-2xl text-base leading-8 text-blue-50">{copy.footer.description}</p>
+							<a href={getLocalePath(locale, 'pdf-watermark')} class="mt-8 inline-flex rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-slate-100">
+								{copy.hero.primary}
+							</a>
+						</div>
+						<div class="grid gap-4">
+							{copy.ads.items.map((item) => (
+								<div class="rounded-2xl border border-white/15 bg-white/10 p-5 text-sm leading-7 text-blue-50">{item}</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="all-tools" class="bg-white py-16 lg:py-24">
+			<div class="mx-auto max-w-7xl px-6">
+				<div class="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+					<div>
+						<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">{copy.categories.eyebrow}</span>
+						<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.nav.allTools}</h2>
+					</div>
+					<p class="max-w-2xl text-base leading-8 text-slate-600">{copy.seo.paragraphs[1] ?? copy.tools.description}</p>
+				</div>
+				<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+					{tools.map((tool) => <ToolCard tool={tool} />)}
+				</div>
+			</div>
+		</section>
+
+		<section id="faq" class="bg-slate-50 py-16 lg:py-24">
+			<div class="mx-auto max-w-4xl px-6">
+				<div class="text-center">
+					<span class="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">FAQ</span>
+					<h2 class="mt-4 text-3xl font-black text-slate-900 md:text-4xl">{copy.faq.title}</h2>
+					<p class="mt-4 text-base leading-8 text-slate-600">{copy.faq.eyebrow}</p>
+				</div>
+				<div class="mt-12">
+					<FaqList items={copy.faq.items} />
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="bg-slate-900 py-14 text-slate-300">
+		<div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1.1fr_0.9fr_0.9fr_1fr]">
+			<div>
+				<a href={getLocalePath(locale)} class="flex items-center gap-3 text-lg font-bold text-white">
+					<span class="inline-flex size-10 items-center justify-center rounded-xl bg-white text-sm font-black tracking-[0.25em] text-slate-900">PK</span>
+					<span>PDFKing</span>
+				</a>
+				<p class="mt-4 text-sm leading-7 text-slate-400">{copy.footer.description}</p>
+			</div>
+			<div>
+				<p class="text-sm font-semibold uppercase tracking-[0.2em] text-white">{copy.footer.popularRoutes}</p>
+				<ul class="mt-4 space-y-3 text-sm">
+					<li><a href={getLocalePath(locale, 'merge-pdf')} class="transition hover:text-white">/merge-pdf</a></li>
+					<li><a href={getLocalePath(locale, 'split-pdf')} class="transition hover:text-white">/split-pdf</a></li>
+					<li><a href={getLocalePath(locale, 'pdf-to-word')} class="transition hover:text-white">/pdf-to-word</a></li>
+				</ul>
+			</div>
+			<div>
+				<p class="text-sm font-semibold uppercase tracking-[0.2em] text-white">{copy.footer.securityRoutes}</p>
+				<ul class="mt-4 space-y-3 text-sm">
+					<li><a href={getLocalePath(locale, 'unlock-pdf')} class="transition hover:text-white">/unlock-pdf</a></li>
+					<li><a href={getLocalePath(locale, 'protect-pdf')} class="transition hover:text-white">/protect-pdf</a></li>
+					<li><a href={getLocalePath(locale, 'pdf-watermark')} class="transition hover:text-white">/pdf-watermark</a></li>
+				</ul>
+			</div>
+			<div>
+				<p class="text-sm font-semibold uppercase tracking-[0.2em] text-white">Categories</p>
+				<ul class="mt-4 space-y-3 text-sm">
+					{categories.map((category) => (
+						<li>{category.name}</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	</footer>
+</Layout>

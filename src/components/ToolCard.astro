@@ -1,0 +1,26 @@
+---
+import type { ToolDefinition } from '../data/tools';
+
+const { tool, compact = false } = Astro.props as { tool: ToolDefinition; compact?: boolean };
+---
+
+<a
+	href={tool.path}
+	class:list={[
+		'group relative block overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_24px_90px_-60px_rgba(37,99,235,0.35)]',
+		compact ? 'block p-5' : 'block p-6',
+	]}
+>
+	<div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top_left,rgba(191,219,254,0.7),transparent_72%)] opacity-0 transition duration-300 group-hover:opacity-100"></div>
+	<div class="flex items-start justify-between gap-4">
+		<div>
+			<p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-600">{tool.categoryLabel}</p>
+			<h3 class="mt-3 text-xl font-bold text-slate-900">{tool.name}</h3>
+		</div>
+		<span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">/{tool.slug}</span>
+	</div>
+	<p class:list={[compact ? 'mt-3 text-sm leading-6' : 'mt-4 text-sm leading-7', 'text-slate-600']}>
+		{compact ? tool.cardDescription : tool.metaDescription}
+	</p>
+	{!compact && <p class="mt-5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400 transition group-hover:text-blue-600">Open tool</p>}
+</a>

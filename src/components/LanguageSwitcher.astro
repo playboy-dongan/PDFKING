@@ -1,0 +1,28 @@
+---
+import type { Locale, ToolSlug } from '../data/tools';
+import { getAlternates, getLocalePath } from '../data/tools';
+
+const {
+	locale,
+	slug,
+} = Astro.props as {
+	locale: Locale;
+	slug?: ToolSlug;
+};
+
+const links = getAlternates(slug);
+---
+
+<div class="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 text-xs font-semibold text-slate-500 shadow-sm">
+	{links.map((link) => (
+		<a
+			href={getLocalePath(link.code, slug)}
+			class:list={[
+				'rounded-full px-3 py-1.5 transition',
+				link.code === locale ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 hover:text-slate-900',
+			]}
+		>
+			{link.label}
+		</a>
+	))}
+</div>
