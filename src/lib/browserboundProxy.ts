@@ -1,3 +1,5 @@
+import { browserboundI18nScript } from './browserboundI18n';
+
 const BROWSERBOUND_ORIGIN = 'https://www.browserbound.com';
 
 const legacyPdfToolMap: Record<string, string> = {
@@ -29,27 +31,51 @@ function upstreamPath(pathname: string) {
 	return cleanPath;
 }
 
-function normalizeDocument(html: string) {
-	return html;
+function mirroredRequestHeaders(request: Request, fallbackAccept: string) {
+	const headers = new Headers();
+	for (const name of ['accept', 'rsc', 'next-url', 'next-router-state-tree', 'next-router-prefetch', 'purpose']) {
+		const value = request.headers.get(name);
+		if (value) headers.set(name, value);
+	}
+	if (!headers.has('accept')) headers.set('accept', fallbackAccept);
+	headers.set('user-agent', 'PDFKING authorized BrowserBound mirror');
+	return headers;
+}
+
+function contentHeaders(response: Response, fallbackType: string) {
+	const headers = new Headers();
+	headers.set('content-type', response.headers.get('content-type') ?? fallbackType);
+	headers.set('cache-control', 'public, max-age=120');
+	return headers;
+}
+
+function injectBrowserboundRuntime(html: string) {
+	const script = `<script id="browserbound-language-runtime">${browserboundI18nScript}</script>`;
+	return html.includes('</body>') ? html.replace('</body>', `${script}</body>`) : `${html}${script}`;
 }
 
 export async function renderBrowserboundPage(request: Request) {
 	const requestUrl = new URL(request.url);
 	const target = new URL(upstreamPath(requestUrl.pathname), BROWSERBOUND_ORIGIN);
 	target.search = requestUrl.search;
+	const isRscRequest = requestUrl.searchParams.has('_rsc') || request.headers.get('rsc') === '1';
 
 	const response = await fetch(target, {
-		headers: {
-			accept: 'text/html,application/xhtml+xml',
-			'user-agent': 'PDFKING authorized BrowserBound mirror',
-		},
+		headers: mirroredRequestHeaders(request, 'text/html,application/xhtml+xml'),
 	});
+
+	if (isRscRequest) {
+		return new Response(response.body, {
+			status: response.status,
+			headers: contentHeaders(response, 'text/x-component; charset=utf-8'),
+		});
+	}
 
 	if (!response.ok) {
 		const fallback = await fetch(new URL('/dashboard', BROWSERBOUND_ORIGIN), {
 			headers: { accept: 'text/html,application/xhtml+xml', 'user-agent': 'PDFKING authorized BrowserBound mirror' },
 		});
-		const html = normalizeDocument(await fallback.text());
+		const html = injectBrowserboundRuntime(await fallback.text());
 		return new Response(html, {
 			status: fallback.status,
 			headers: {
@@ -60,7 +86,7 @@ export async function renderBrowserboundPage(request: Request) {
 		});
 	}
 
-	const html = normalizeDocument(await response.text());
+	const html = injectBrowserboundRuntime(await response.text());
 	return new Response(html, {
 		status: response.status,
 		headers: {
