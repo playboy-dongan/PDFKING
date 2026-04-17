@@ -1,20 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap");
 @import "tailwindcss";
 @source "../**/*.{astro,html,js,ts}";
 @source "../../node_modules/flowbite/**/*.js";
 
 :root {
 	color-scheme: light;
-	font-family: "Aptos", "Segoe UI", sans-serif;
-	--paper: #fbfaf7;
-	--panel: #ffffff;
-	--ink: #171411;
-	--muted: #6f685f;
-	--faint: #9b9489;
-	--line: #e7ded2;
-	--line-strong: #d5c7b6;
-	--accent: #f4b63f;
-	--accent-soft: #fff4d9;
-	--accent-ink: #3a2600;
+	font-family: "Nunito Sans", Arial, sans-serif;
+	--background: #fff;
+	--foreground: #09090b;
+	--card: #fff;
+	--card-foreground: #09090b;
+	--popover: #fff;
+	--popover-foreground: #09090b;
+	--primary: #f05100;
+	--primary-foreground: #fafafa;
+	--secondary: #f4f4f5;
+	--secondary-foreground: #18181b;
+	--muted: #f4f4f5;
+	--muted-foreground: #71717b;
+	--accent: #f4f4f5;
+	--accent-foreground: #18181b;
+	--destructive: #fb2c36;
+	--destructive-foreground: #fb2c36;
+	--border: #e4e4e7;
+	--input: #d4d4d8;
+	--ring: #d4d4d8;
+	--sidebar: #18181b;
+	--sidebar-foreground: #d4d4d8;
+	--sidebar-primary: #f05100;
+	--sidebar-primary-foreground: #d4d4d8;
+	--sidebar-accent: #27272a;
+	--sidebar-accent-foreground: #d4d4d8;
+	--sidebar-border: #e4e4e7;
+	--sidebar-ring: #ff8b1a;
+	--radius: .625rem;
+	--paper: var(--background);
+	--panel: var(--card);
+	--ink: var(--foreground);
+	--faint: var(--muted-foreground);
+	--line: var(--border);
+	--line-strong: var(--input);
+	--accent-soft: rgba(240, 81, 0, 0.1);
+	--accent-ink: var(--primary);
 }
 
 html,
@@ -24,9 +51,7 @@ body {
 }
 
 body {
-	background:
-		radial-gradient(circle at top left, rgba(244, 182, 63, 0.16), transparent 32rem),
-		linear-gradient(180deg, #fffdfa 0%, var(--paper) 48rem);
+	background: var(--background);
 	color: var(--ink);
 }
 
@@ -39,8 +64,8 @@ summary::-webkit-details-marker {
 }
 
 ::selection {
-	background: rgba(244, 182, 63, 0.32);
-	color: var(--ink);
+	background: rgba(240, 81, 0, 0.22);
+	color: var(--foreground);
 }
 
 .pdfking-container {
@@ -56,7 +81,7 @@ summary::-webkit-details-marker {
 }
 
 .pdfking-card-hover:hover {
-	border-color: var(--line-strong);
-	background-color: #fffefa;
-	box-shadow: 0 18px 52px -42px rgba(23, 20, 17, 0.55);
+	border-color: rgba(9, 9, 11, 0.3);
+	background-color: var(--card);
+	box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }

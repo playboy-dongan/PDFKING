@@ -64,83 +64,83 @@ const ui = locale === 'zh-cn'
 	lang={localeMeta.htmlLang}
 	alternates={alternates}
 >
-	<div class="flex min-h-svh w-full bg-[var(--paper)]">
-		<aside class="sticky top-0 hidden h-svh w-64 shrink-0 border-r border-[var(--line)] bg-[var(--ink)] text-white md:flex md:flex-col">
-			<div class="flex h-16 items-center gap-3 border-b border-white/10 px-4">
+	<div class="flex min-h-svh w-full bg-[var(--background)]">
+		<aside class="sticky top-0 hidden h-svh w-64 shrink-0 bg-[var(--sidebar)] text-[var(--sidebar-foreground)] md:flex md:flex-col">
+			<div class="flex h-16 items-center gap-3 px-4">
 				<img src="/pdfking-logo.svg" alt="PDFKING logo" class="size-10 rounded-md bg-white p-1" />
 				<div class="min-w-0">
 					<p class="truncate text-sm font-semibold">PDFKING</p>
-					<p class="truncate text-xs text-white/55">{ui.tagline}</p>
+					<p class="truncate text-xs text-[var(--sidebar-foreground)]/55">{ui.tagline}</p>
 				</div>
 			</div>
 
 			<nav class="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto p-4 text-sm">
 				<div>
-					<p class="mb-2 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/42">{ui.toolsGroup}</p>
+					<p class="mb-2 px-2 text-xs font-medium uppercase text-[var(--sidebar-foreground)]/50">{ui.toolsGroup}</p>
 					<div class="grid gap-1">
-						<button type="button" data-dashboard-filter="all" class="flex h-9 w-full items-center justify-between gap-3 rounded-md bg-white/12 px-2 text-left font-medium text-white">
+						<button type="button" data-dashboard-filter="all" class="flex h-9 w-full items-center justify-between gap-3 rounded-md bg-gradient-to-b from-[var(--sidebar-primary)] to-[rgba(240,81,0,0.7)] px-2 text-left font-medium text-[var(--sidebar-foreground)] shadow-[0_1px_2px_0_rgb(0_0_0/.05),inset_0_1px_0_0_rgb(255_255_255/.12)]">
 							<span class="flex min-w-0 items-center gap-3">
-								<span class="inline-flex size-5 shrink-0 items-center justify-center rounded bg-[var(--accent)] text-[10px] font-bold text-[var(--accent-ink)]">P</span>
+								<span class="inline-flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-bold text-[var(--sidebar-foreground)]">P</span>
 								<span class="truncate">{ui.allTools}</span>
 							</span>
-							<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-white/72">{tools.length}</span>
+							<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-[var(--sidebar-foreground)]">{tools.length}</span>
 						</button>
 						{categoryGroups.map((category) => (
-							<button type="button" data-dashboard-filter={category.id} class="flex h-9 w-full items-center justify-between gap-3 rounded-md px-2 text-left font-medium text-white/72 transition hover:bg-white/10 hover:text-white">
+							<button type="button" data-dashboard-filter={category.id} class="flex h-9 w-full items-center justify-between gap-3 rounded-md px-2 text-left font-medium text-[var(--sidebar-foreground)]/72 transition hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]">
 								<span class="truncate">{category.name}</span>
-								<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-white/58">{category.tools.length}</span>
+								<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs text-[var(--sidebar-foreground)]/58">{category.tools.length}</span>
 							</button>
 						))}
 					</div>
 				</div>
 
 				<div class="mt-auto">
-					<p class="mb-2 px-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/42">{ui.moreGroup}</p>
+					<p class="mb-2 px-2 text-xs font-medium uppercase text-[var(--sidebar-foreground)]/50">{ui.moreGroup}</p>
 					<div class="grid gap-1">
-						<a href={`${routePrefix}/help/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{ui.help}</a>
-						<a href={`${routePrefix}/settings/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-white/72 transition hover:bg-white/10 hover:text-white">{ui.settings}</a>
+						<a href={`${routePrefix}/help/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-[var(--sidebar-foreground)]/72 transition hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]">{ui.help}</a>
+						<a href={`${routePrefix}/settings/`.replace('//', '/')} class="flex h-9 items-center rounded-md px-2 font-medium text-[var(--sidebar-foreground)]/72 transition hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]">{ui.settings}</a>
 					</div>
 				</div>
 			</nav>
 		</aside>
 
 		<div class="min-w-0 flex-1">
-			<header class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-3 border-b border-[var(--line)] bg-[rgba(251,250,247,0.92)] px-4 backdrop-blur-xl md:px-6 lg:px-8">
+			<header class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-3 bg-[var(--sidebar)] px-4 text-[var(--sidebar-foreground)] md:px-6 lg:px-8 relative before:absolute before:inset-y-3 before:-left-px before:w-px before:bg-gradient-to-b before:from-white/5 before:via-white/15 before:to-white/5">
 				<a href={getLocalePath(locale)} class="flex items-center gap-3 md:hidden">
 					<img src="/pdfking-logo.svg" alt="PDFKING logo" class="size-9" />
-					<span class="text-sm font-semibold text-[var(--ink)]">PDFKING</span>
+					<span class="text-sm font-semibold text-[var(--sidebar-foreground)]">PDFKING</span>
 				</a>
-				<nav class="ml-auto hidden items-center text-sm font-medium text-[var(--muted)] sm:flex" aria-label="Breadcrumb">
-					<span class="text-[var(--ink)]" aria-current="page">{ui.home}</span>
+				<nav class="ml-auto hidden items-center text-sm font-medium sm:flex" aria-label="Breadcrumb">
+					<span class="text-[var(--sidebar-foreground)]" aria-current="page">{ui.home}</span>
 				</nav>
 				<div class="ml-auto sm:ml-4">
 					<LanguageSwitcher locale={locale} />
 				</div>
 			</header>
 
-			<main class="h-[calc(100vh-4rem)] overflow-y-auto bg-[var(--paper)]">
+			<main class="h-[calc(100vh-4rem)] overflow-y-auto bg-[var(--background)]">
 				<div class="mx-auto min-h-screen max-w-[1600px] space-y-8 p-6 md:p-12">
 					<section class="space-y-4 text-center">
-						<h1 class="text-4xl font-bold tracking-tight text-[var(--ink)]">{ui.title}</h1>
-						<p class="mx-auto max-w-2xl text-lg leading-8 text-[var(--muted)]">{ui.description}</p>
+						<h1 class="text-4xl font-bold tracking-tight text-[var(--foreground)]">{ui.title}</h1>
+						<p class="mx-auto max-w-2xl text-lg leading-8 text-[var(--muted-foreground)]">{ui.description}</p>
 					</section>
 
 					<div class="flex justify-center">
 						<div class="relative w-full max-w-xl">
-							<svg class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[var(--faint)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
-							<input data-dashboard-search type="text" class="h-12 w-full rounded-full border border-[var(--line)] bg-white pl-12 pr-5 text-base text-[var(--ink)] shadow-sm outline-none transition focus:border-[var(--line-strong)]" placeholder={ui.search} />
+							<svg class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[var(--muted-foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" /></svg>
+							<input data-dashboard-search type="text" class="h-12 w-full rounded-full border border-[var(--border)] bg-transparent pl-12 pr-5 text-base text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus:border-[var(--ring)] focus:ring-3 focus:ring-[var(--ring)]/50" placeholder={ui.search} />
 						</div>
 					</div>
 
 					<div class="flex flex-wrap justify-center gap-3">
-						<button type="button" data-dashboard-filter="all" class="flex h-10 items-center gap-2 rounded-full border border-[var(--ink)] bg-[var(--ink)] px-5 text-sm font-medium text-white transition">
+						<button type="button" data-dashboard-filter="all" class="flex h-10 items-center gap-2 rounded-full border border-[var(--foreground)] bg-[var(--foreground)] px-5 text-sm font-medium text-[var(--background)] transition-all duration-200">
 							{ui.allTools}
-							<span class="rounded-full bg-white/15 px-1.5 py-0.5 text-xs text-white">{tools.length}</span>
+							<span class="rounded-full bg-[var(--background)]/20 px-1.5 py-0.5 text-xs text-[var(--background)]">{tools.length}</span>
 						</button>
 						{categoryGroups.map((category) => (
-							<button type="button" data-dashboard-filter={category.id} class="flex h-10 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-5 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--ink)] hover:bg-[var(--ink)] hover:text-white">
+							<button type="button" data-dashboard-filter={category.id} class="flex h-10 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-medium text-[var(--foreground)] transition-all duration-200 hover:border-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)]">
 								{category.name}
-								<span class="rounded-full bg-[var(--paper)] px-1.5 py-0.5 text-xs text-[var(--muted)]">{category.tools.length}</span>
+								<span class="rounded-full bg-[var(--muted)] px-1.5 py-0.5 text-xs text-[var(--muted-foreground)]">{category.tools.length}</span>
 							</button>
 						))}
 					</div>
@@ -151,20 +151,20 @@ const ui = locale === 'zh-cn'
 								data-dashboard-card
 								data-category={toolCategoryIds[tool.slug]}
 								data-search={`${tool.name} ${tool.slug} ${tool.categoryLabel} ${tool.cardDescription}`.toLowerCase()}
-								class="group relative flex h-full min-h-56 flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-lg"
+								class="group relative flex h-full min-h-56 flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--foreground)]/30 hover:shadow-lg"
 								href={tool.path}
 							>
-								<span class="absolute right-4 top-4 inline-flex h-5 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--accent-soft)] px-2 text-[10px] font-bold uppercase text-[var(--accent-ink)]">{ui.live}</span>
-								<div class="mb-4 flex size-12 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-lg font-bold text-[var(--ink)] transition-transform duration-300 group-hover:scale-110">
+								<span class="absolute right-4 top-4 inline-flex h-5 items-center justify-center rounded-[999px] border border-[var(--primary)] px-2 py-0.5 text-[10px] font-bold uppercase text-[var(--primary)]">{ui.live}</span>
+								<div class="mb-4 flex size-12 items-center justify-center rounded-2xl text-lg font-bold text-[var(--primary)] transition-transform duration-300 group-hover:scale-110">
 									{tool.name.slice(0, 1)}
 								</div>
-								<h3 class="mb-2 text-lg font-medium text-[var(--ink)]">{tool.name}</h3>
-								<p class="line-clamp-3 text-sm leading-6 text-[var(--muted)]">{tool.cardDescription}</p>
+								<h3 class="mb-2 text-lg font-medium text-[var(--foreground)]">{tool.name}</h3>
+								<p class="line-clamp-3 text-sm leading-6 text-[var(--muted-foreground)]">{tool.cardDescription}</p>
 							</a>
 						))}
 					</section>
 
-					<p data-dashboard-empty class="hidden rounded-2xl border border-[var(--line)] bg-white p-6 text-center text-sm font-medium text-[var(--muted)]">{ui.noResults}</p>
+					<p data-dashboard-empty class="hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 text-center text-sm font-medium text-[var(--muted-foreground)]">{ui.noResults}</p>
 				</div>
 			</main>
 		</div>
