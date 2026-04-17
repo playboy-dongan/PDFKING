@@ -10,13 +10,11 @@
     "build": "astro build",
     "test:e2e": "node scripts/e2e-tools.mjs",
     "capture:layout": "node scripts/capture-layout.mjs",
-    "sync:browserbound": "node scripts/sync-browserbound-dashboard.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.10",
-    "@astrojs/sitemap": "^3.7.2",
     "@neslinesli93/qpdf-wasm": "^0.3.0",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.7",

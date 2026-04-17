@@ -1,9 +1,0 @@
----
-import BrowserboundPlaceholderPage from '../../components/pages/BrowserboundPlaceholderPage.astro';
-
-export const prerender = false;
-
-const bbSlug = Astro.params.bbSlug ?? '';
----
-
-<BrowserboundPlaceholderPage section="image-tools" slug={bbSlug} />
