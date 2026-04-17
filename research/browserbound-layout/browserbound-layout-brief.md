@@ -1,56 +1,35 @@
-# BrowserBound 布局采集结论
+# BrowserBound Layout Capture Brief
 
-本报告只用于学习布局格式，不包含颜色、图片、Logo、品牌素材或可复用文案。
+Capture mode switched to HTTP static capture: no Chrome, no screenshots, no colors, no images, no logos, no brand assets, and no copied page body text.
 
-## 已采集页面
+- Covered pages: 559
+- Successful pages: 547
+- Failed pages: 12
+- Help page: covered
+- Settings page: covered
 
-- `https://www.browserbound.com/dashboard`
-- `https://www.browserbound.com/pdf-tools`
-- `https://www.browserbound.com/pdf-tools/merge`
-- `https://www.browserbound.com/text-tools`
-- `https://www.browserbound.com/text-tools/split-text`
+## Coverage By Page Type
+| type | count | ok | avg card candidates | avg button candidates | avg internal links |
+| --- | --- | --- | --- | --- | --- |
+| home | 1 | 1 | 56 | 22 | 22 |
+| dashboard | 1 | 1 | 554 | 552 | 546 |
+| category | 4 | 4 | 152.5 | 150.5 | 143.8 |
+| pdf-tool | 79 | 79 | 16.4 | 11.3 | 13.2 |
+| image-tool | 131 | 124 | 13 | 9 | 11 |
+| text-tool | 210 | 206 | 13 | 9 | 11 |
+| misc-tool | 131 | 130 | 13 | 9 | 11 |
+| help | 1 | 1 | 15 | 10 | 9 |
+| settings | 1 | 1 | 10 | 8 | 9 |
 
-每个页面采集了 `desktop 1440x1100`、`tablet 768x1000`、`mobile 390x844` 三个断点。
+## Reusable Layout Signals
 
-## 可借鉴的结构
+- Page structure: counts for header, main, footer, nav, section, form, input, and button elements.
+- SEO structure: title, description, H1, H2, and H3 counts and character lengths only.
+- Tool-site structure: coverage for category pages, tool pages, help, and settings.
+- Visual format tokens: non-color class tokens for type scale, spacing, grid, width, height, radius, border, shadow, and responsive breakpoints.
 
-- 桌面和平板使用固定左侧导航，宽度约 `256px`；主内容从 `x=256` 开始。
-- 移动端取消左侧导航，顶部 header 高度约 `64px`，主内容宽度占满视口。
-- 主内容顶部 header 高度统一约 `64px`。
-- 桌面主内容宽度约 `1184px`，内部内容区常见 padding 为 `48px`。
-- 移动端页面左右留白约 `24px`，卡片宽度约 `342px`。
+## Output Files
 
-## 工具目录页卡片
-
-- 桌面：4 列卡片，每张约 `256x210px`。
-- 平板：2 列卡片，每张约 `192x210px`。
-- 移动：1 列卡片，每张约 `342x210px`。
-- 卡片 padding 统一约 `24px`。
-- 卡片圆角约 `18px`。
-- 卡片之间的横向间距约 `16px`，大区块间距常见 `32px`。
-- 卡片标题常见字号 `18px`、行高 `28px`、字重 `500`。
-- 正文/导航/按钮常见字号 `14px` 或 `16px`。
-
-## 分类页顶部
-
-- H1 桌面常见 `36px/40px/700`。
-- 搜索框桌面约 `448-576px` 宽、`44-48px` 高，圆角为 pill。
-- 筛选按钮高度约 `36-40px`，左右 padding 约 `20px`，按钮间距约 `8-12px`。
-- 分类页重点不是大 hero，而是“搜索 + 筛选 + 工具矩阵”的工具目录体验。
-
-## 单工具页
-
-- 工具页 H1 桌面约 `48px/48px/700`，移动约 `30px/36px/700`。
-- 上传控件区居中，按钮为 pill，典型按钮尺寸约 `190x36px`。
-- 单工具页比目录页更聚焦，顶部先说明任务，然后进入上传/处理区。
-- 移动端工具页仍然保持 `16-24px` 页面边距，H1 缩小但不改变中心结构。
-
-## 给 PDFKING 的改版方向
-
-- 首页不要再做传统 SaaS hero 堆叠，改成“工具目录首页”：搜索框、分类筛选、工具矩阵优先。
-- PDF 工具卡统一做固定高度卡片，桌面 3-4 列，移动 1 列。
-- 单工具页减少说明区域，把上传处理区放到更靠前的位置。
-- 左侧导航可以作为桌面端增强方案，但移动端必须回到顶部导航。
-- Hover 动效保持轻量：只做阴影、边框、轻微位移，不做大面积颜色变化。
-- SEO 内容不要塞进首屏视觉区，可以放在工具矩阵下方做 FAQ、HowTo、相关工具和长尾内链。
-
+- `browserbound-layout-coverage.md`: full URL coverage inventory.
+- `browserbound-layout-static.md`: full static layout structure report.
+- `browserbound-layout-static.json`: machine-readable full-site capture data.
