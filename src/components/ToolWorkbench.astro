@@ -9,16 +9,16 @@ const copy = isZh
 	? {
 			title: tool.actionLabel,
 			description: acceptHint,
-			uploadLabel: '选择或拖放文件',
+			uploadLabel: '选择文件',
 			uploadHint: tool.allowMultiple ? '支持一次选择多个文件' : '当前工具一次处理一个文件',
 			acceptLabel: '支持格式',
 			engineLabel: '处理方式',
 			engineValue: tool.engineSummary,
-			previewTitle: '预览',
-			previewBody: '上传后显示文件预览或摘要。',
+			previewTitle: '文件预览',
+			previewBody: '上传后会在这里显示首页预览、文档摘要或图像缩略图。',
 			previewWaiting: '等待文件',
-			resultsTitle: '结果',
-			resultsBody: '处理完成后显示下载按钮。',
+			resultsTitle: '处理结果',
+			resultsBody: '处理完成后，这里会出现下载按钮和结果摘要。',
 			statusValue: '等待上传',
 			runLabel: tool.actionLabel,
 			multiLabel: '多文件',
@@ -40,20 +40,20 @@ const copy = isZh
 	: {
 			title: tool.actionLabel,
 			description: acceptHint,
-			uploadLabel: 'Choose or drop files',
+			uploadLabel: 'Choose files',
 			uploadHint: tool.allowMultiple ? 'Multiple files are supported in one run' : 'This tool processes one file at a time',
 			acceptLabel: 'Accepted formats',
 			engineLabel: 'Processing mode',
 			engineValue: tool.engineSummary,
-			previewTitle: 'Preview',
-			previewBody: 'A file preview or summary appears after upload.',
+			previewTitle: 'File preview',
+			previewBody: 'A first-page preview, document summary, or image thumbnail appears after upload.',
 			previewWaiting: 'Waiting for file',
-			resultsTitle: 'Results',
-			resultsBody: 'Download buttons appear after processing.',
+			resultsTitle: 'Processing result',
+			resultsBody: 'Download buttons and a result summary appear after processing.',
 			statusValue: 'Waiting for upload',
 			runLabel: tool.actionLabel,
-			multiLabel: 'multi',
-			singleLabel: 'single',
+			multiLabel: 'multi-file',
+			singleLabel: 'single-file',
 			rangeLabel: 'Page ranges',
 			rangeHint: 'Example: 1-2,4,7-9',
 			qualityLabel: 'Compression quality',
@@ -78,78 +78,82 @@ const copy = isZh
 		name: tool.name,
 		actionLabel: tool.actionLabel,
 	})}
-	class="rounded-[2rem] border border-gray-200 bg-white p-5 shadow-[0_24px_80px_-42px_rgba(37,99,235,0.45)] sm:p-8"
+	class="rounded-3xl border border-[var(--line)] bg-white p-4 shadow-[0_24px_70px_-54px_rgba(23,20,17,0.65)] sm:p-5"
 >
-	<div class="mx-auto max-w-3xl text-center">
-		<h2 class="text-2xl font-extrabold tracking-tight text-gray-950 sm:text-3xl">{copy.title}</h2>
-		<p class="mt-3 text-sm leading-7 text-gray-600">{copy.description}</p>
-	</div>
-
-	<div class="mt-8 rounded-[1.5rem] border-2 border-dashed border-blue-200 bg-blue-50/50 p-6 text-center">
-		<div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-white">
-			<svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 16V4m0 0 4 4m-4-4-4 4M4 16.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5" /></svg>
+	<div class="flex items-start justify-between gap-4">
+		<div>
+			<p class="text-lg font-semibold tracking-tight text-[var(--ink)]">{copy.title}</p>
+			<p class="mt-2 text-sm leading-6 text-[var(--muted)]">{copy.description}</p>
 		</div>
-		<p class="text-lg font-bold text-gray-950">{copy.uploadLabel}</p>
-		<p class="mt-2 text-sm text-gray-600">{copy.uploadHint}</p>
-		<div class="mx-auto mt-5 max-w-xl">
-			<input
-				data-role="file-input"
-				type="file"
-				accept={tool.accept}
-				multiple={tool.allowMultiple}
-				class="block w-full cursor-pointer rounded-xl border border-gray-300 bg-white text-sm text-gray-900 shadow-sm file:mr-4 file:border-0 file:bg-blue-700 file:px-5 file:py-3.5 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-800 focus:outline-none"
-			/>
-		</div>
-		<span class="mt-4 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm">
+		<span class="rounded-md bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent-ink)]">
 			{tool.allowMultiple ? copy.multiLabel : copy.singleLabel}
 		</span>
 	</div>
 
-	<div class="mt-6 grid gap-4 md:grid-cols-2">
-		<div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-			<p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">{copy.acceptLabel}</p>
-			<p class="text-sm font-semibold leading-7 text-gray-900">{tool.accept.replaceAll(',', ' / ')}</p>
+	<div class="mt-5 rounded-2xl border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-4">
+		<div class="flex items-center gap-3">
+			<div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--ink)] text-white">
+				<svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 16V4m0 0 4 4m-4-4-4 4M4 16.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5" /></svg>
+			</div>
+			<div>
+				<p class="text-sm font-semibold text-[var(--ink)]">{copy.uploadLabel}</p>
+				<p class="mt-1 text-xs leading-5 text-[var(--muted)]">{copy.uploadHint}</p>
+			</div>
 		</div>
-		<div class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-			<p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">{copy.engineLabel}</p>
-			<p class="text-sm leading-7 text-gray-600">{copy.engineValue}</p>
+		<input
+			data-role="file-input"
+			type="file"
+			accept={tool.accept}
+			multiple={tool.allowMultiple}
+			class="mt-4 block w-full cursor-pointer rounded-md border border-[var(--line)] bg-white text-sm text-[var(--muted)] shadow-sm file:mr-4 file:border-0 file:bg-[var(--ink)] file:px-4 file:py-3 file:text-sm file:font-semibold file:text-white hover:file:bg-[#2a251f] focus:outline-none"
+		/>
+	</div>
+
+	<div class="mt-4 grid gap-3 sm:grid-cols-2">
+		<div class="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-4">
+			<p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.acceptLabel}</p>
+			<p class="text-sm font-medium leading-6 text-[var(--ink)]">{tool.accept.replaceAll(',', ' / ')}</p>
+		</div>
+		<div class="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-4">
+			<p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.engineLabel}</p>
+			<p class="text-sm leading-6 text-[var(--muted)]">{copy.engineValue}</p>
 		</div>
 	</div>
 
-	<div class="mt-6 space-y-4">
+	<div class="mt-4 space-y-3">
 		{tool.slug === 'split-pdf' && (
-			<label class="block rounded-2xl border border-gray-200 bg-white p-5">
-				<span class="text-sm font-semibold text-gray-950">{copy.rangeLabel}</span>
-				<input data-role="ranges" type="text" value="1-2,4" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
-				<span class="mt-2 block text-xs leading-6 text-gray-500">{copy.rangeHint}</span>
+			<label class="block rounded-2xl border border-[var(--line)] bg-white p-4">
+				<span class="text-sm font-semibold text-[var(--ink)]">{copy.rangeLabel}</span>
+				<input data-role="ranges" type="text" value="1-2,4" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none" />
+				<span class="mt-2 block text-xs leading-5 text-[var(--muted)]">{copy.rangeHint}</span>
 			</label>
 		)}
 
 		{tool.slug === 'compress-pdf' && (
-			<label class="block rounded-2xl border border-gray-200 bg-white p-5">
-				<span class="text-sm font-semibold text-gray-950">{copy.qualityLabel}</span>
-				<input data-role="quality" type="range" min="0.35" max="0.9" step="0.05" value="0.7" class="mt-4 block w-full accent-blue-700" />
-				<span class="mt-2 block text-xs leading-6 text-gray-500">{copy.qualityHint}</span>
+			<label class="block rounded-2xl border border-[var(--line)] bg-white p-4">
+				<span class="text-sm font-semibold text-[var(--ink)]">{copy.qualityLabel}</span>
+				<input data-role="quality" type="range" min="0.35" max="0.9" step="0.05" value="0.7" class="mt-4 block w-full accent-[var(--ink)]" />
+				<span class="mt-2 block text-xs leading-5 text-[var(--muted)]">{copy.qualityHint}</span>
 			</label>
 		)}
 
 		{tool.slug === 'pdf-watermark' && (
-			<div class="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
+			<div class="grid gap-3 rounded-2xl border border-[var(--line)] bg-white p-4 sm:grid-cols-2">
 				<label class="block">
-					<span class="text-sm font-semibold text-gray-950">{copy.watermarkTextLabel}</span>
-					<input data-role="watermark-text" type="text" value="PDFKING" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
+					<span class="text-sm font-semibold text-[var(--ink)]">{copy.watermarkTextLabel}</span>
+					<input data-role="watermark-text" type="text" value="PDFKING" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none" />
 				</label>
 				<label class="block">
-					<span class="text-sm font-semibold text-gray-950">{copy.watermarkOpacityLabel}</span>
-					<input data-role="watermark-opacity" type="range" min="0.08" max="0.45" step="0.02" value="0.18" class="mt-5 block w-full accent-blue-700" />
+					<span class="text-sm font-semibold text-[var(--ink)]">{copy.watermarkOpacityLabel}</span>
+					<input data-role="watermark-opacity" type="range" min="0.08" max="0.45" step="0.02" value="0.18" class="mt-5 block w-full accent-[var(--ink)]" />
 				</label>
 			</div>
 		)}
 
 		{tool.slug === 'rotate-pdf' && (
-			<label class="block rounded-2xl border border-gray-200 bg-white p-5">
-				<span class="text-sm font-semibold text-gray-950">{copy.rotationLabel}</span>
-				<select data-role="rotation" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600">
+			<label class="block rounded-2xl border border-[var(--line)] bg-white p-4">
+				<span class="text-sm font-semibold text-[var(--ink)]">{copy.rotationLabel}</span>
+				<select data-role="rotation" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none">
 					<option value="90">90 deg</option>
 					<option value="180">180 deg</option>
 					<option value="270">270 deg</option>
@@ -158,29 +162,29 @@ const copy = isZh
 		)}
 
 		{tool.slug === 'protect-pdf' && (
-			<div class="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
+			<div class="grid gap-3 rounded-2xl border border-[var(--line)] bg-white p-4 sm:grid-cols-2">
 				<label class="block">
-					<span class="text-sm font-semibold text-gray-950">{copy.openPasswordLabel}</span>
-					<input data-role="user-password" type="password" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
+					<span class="text-sm font-semibold text-[var(--ink)]">{copy.openPasswordLabel}</span>
+					<input data-role="user-password" type="password" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none" />
 				</label>
 				<label class="block">
-					<span class="text-sm font-semibold text-gray-950">{copy.ownerPasswordLabel}</span>
-					<input data-role="owner-password" type="password" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
+					<span class="text-sm font-semibold text-[var(--ink)]">{copy.ownerPasswordLabel}</span>
+					<input data-role="owner-password" type="password" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none" />
 				</label>
 			</div>
 		)}
 
 		{tool.slug === 'unlock-pdf' && (
-			<label class="block rounded-2xl border border-gray-200 bg-white p-5">
-				<span class="text-sm font-semibold text-gray-950">{copy.unlockPasswordLabel}</span>
-				<input data-role="unlock-password" type="password" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600" />
+			<label class="block rounded-2xl border border-[var(--line)] bg-white p-4">
+				<span class="text-sm font-semibold text-[var(--ink)]">{copy.unlockPasswordLabel}</span>
+				<input data-role="unlock-password" type="password" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none" />
 			</label>
 		)}
 
 		{tool.slug === 'ocr-pdf' && (
-			<label class="block rounded-2xl border border-gray-200 bg-white p-5">
-				<span class="text-sm font-semibold text-gray-950">{copy.ocrFormatLabel}</span>
-				<select data-role="ocr-format" class="mt-3 block w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600">
+			<label class="block rounded-2xl border border-[var(--line)] bg-white p-4">
+				<span class="text-sm font-semibold text-[var(--ink)]">{copy.ocrFormatLabel}</span>
+				<select data-role="ocr-format" class="mt-3 block w-full rounded-md border border-[var(--line)] bg-[var(--paper)] p-3 text-sm text-[var(--ink)] focus:border-[var(--line-strong)] focus:outline-none">
 					<option value="docx">{copy.ocrDocx}</option>
 					<option value="txt">{copy.ocrTxt}</option>
 				</select>
@@ -188,28 +192,28 @@ const copy = isZh
 		)}
 	</div>
 
-	<button data-role="run-button" type="button" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-700 px-6 py-4 text-base font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+	<button data-role="run-button" type="button" class="mt-4 inline-flex w-full items-center justify-center rounded-md bg-[var(--ink)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_40px_-30px_rgba(23,20,17,0.75)] transition hover:bg-[#2a251f] focus:outline-none">
 		{copy.runLabel}
 	</button>
 
-	<div class="mt-6 grid gap-4 lg:grid-cols-2">
-		<div class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-			<div class="mb-4 flex items-center justify-between gap-4">
-				<p class="text-sm font-bold text-gray-950">{copy.previewTitle}</p>
-				<span data-role="preview-label" class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm">{copy.previewWaiting}</span>
+	<div class="mt-4 grid gap-3">
+		<div class="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-4">
+			<div class="mb-3 flex items-center justify-between gap-3">
+				<p class="text-sm font-semibold text-[var(--ink)]">{copy.previewTitle}</p>
+				<span data-role="preview-label" class="rounded-md bg-white px-2.5 py-1 text-xs font-medium text-[var(--muted)] shadow-sm">{copy.previewWaiting}</span>
 			</div>
-			<div data-role="preview" class="flex min-h-48 items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white p-5 text-center text-sm leading-7 text-gray-500">
+			<div data-role="preview" class="flex min-h-36 items-center justify-center rounded-xl border border-dashed border-[var(--line-strong)] bg-white p-4 text-center text-sm leading-6 text-[var(--muted)]">
 				{copy.previewBody}
 			</div>
 		</div>
 
-		<div class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-			<div class="mb-4 flex items-center justify-between gap-4">
-				<p class="text-sm font-bold text-gray-950">{copy.resultsTitle}</p>
-				<span data-role="status" class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">{copy.statusValue}</span>
+		<div class="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-4">
+			<div class="mb-3 flex items-center justify-between gap-3">
+				<p class="text-sm font-semibold text-[var(--ink)]">{copy.resultsTitle}</p>
+				<span data-role="status" class="rounded-md bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent-ink)]">{copy.statusValue}</span>
 			</div>
 			<div data-role="results" class="grid gap-3">
-				<div class="rounded-xl border border-dashed border-gray-300 bg-white p-5 text-sm leading-7 text-gray-500">
+				<div class="rounded-xl border border-dashed border-[var(--line-strong)] bg-white p-4 text-sm leading-6 text-[var(--muted)]">
 					<p>{copy.resultsBody}</p>
 				</div>
 			</div>

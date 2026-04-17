@@ -25,6 +25,37 @@ const alternates = getAlternates().map((item) => ({ hreflang: item.hreflang, hre
 const schema = buildHomeSchema(locale, Astro.url.href);
 const featuredTools = tools.slice(0, 6);
 const workflowTools = tools.slice(6, 10);
+const categoryGroups = categories.map((category) => ({
+	...category,
+	tools: tools.filter((tool) => category.slugs.includes(tool.slug)),
+}));
+const ui = locale === 'zh-cn'
+	? {
+			open: '打开',
+			directory: '工具目录',
+			directoryHint: '高频 PDF 路由',
+			allTools: '全部工具',
+			quickAccess: '快速入口',
+			staticSeo: '静态 SEO 页面',
+			langs: '双语路由',
+			account: '无需账号',
+			openSource: '开源依赖',
+			adSlot: '广告位预留',
+			adHint: '页面结构已给横幅、原生广告和页脚广告留出稳定位置。',
+		}
+	: {
+			open: 'Open',
+			directory: 'Tool directory',
+			directoryHint: 'High-intent PDF routes',
+			allTools: 'All tools',
+			quickAccess: 'Quick access',
+			staticSeo: 'Static SEO pages',
+			langs: 'Bilingual routes',
+			account: 'No account',
+			openSource: 'Open-source stack',
+			adSlot: 'Ad slot reserved',
+			adHint: 'The page structure keeps stable room for banner, native, and footer ad placements.',
+		};
 ---
 
 <Layout
@@ -34,219 +65,202 @@ const workflowTools = tools.slice(6, 10);
 	lang={localeMeta.htmlLang}
 	alternates={alternates}
 >
-	<header class="fixed left-0 right-0 top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
-		<div class="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-4 lg:px-6">
-			<a href={getLocalePath(locale)} class="flex items-center">
-				<img src="/pdfking-logo.svg" alt="PDFKING logo" class="mr-3 h-9 w-9" />
-				<span class="self-center whitespace-nowrap text-xl font-semibold text-gray-900">PDFKING</span>
+	<header class="sticky top-0 z-50 border-b border-[var(--line)] bg-[rgba(251,250,247,0.9)] backdrop-blur-xl">
+		<div class="pdfking-container flex h-16 items-center justify-between gap-4">
+			<a href={getLocalePath(locale)} class="flex items-center gap-3">
+				<img src="/pdfking-logo.svg" alt="PDFKING logo" class="size-10" />
+				<span class="text-lg font-semibold tracking-tight text-[var(--ink)]">PDFKING</span>
 			</a>
-			<nav class="hidden items-center gap-8 text-sm font-medium text-gray-700 lg:flex">
-				<a href="#tools" class="hover:text-blue-600">{copy.nav.allTools}</a>
-				<a href="#features" class="hover:text-blue-600">{copy.nav.categories}</a>
-				<a href="#faq" class="hover:text-blue-600">{copy.nav.faq}</a>
+			<nav class="hidden items-center gap-7 text-sm font-medium text-[var(--muted)] lg:flex">
+				<a href="#tools" class="hover:text-[var(--ink)]">{copy.nav.allTools}</a>
+				<a href="#categories" class="hover:text-[var(--ink)]">{copy.nav.categories}</a>
+				<a href="#faq" class="hover:text-[var(--ink)]">{copy.nav.faq}</a>
 			</nav>
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-2">
 				<LanguageSwitcher locale={locale} />
-				<a href={getLocalePath(locale, 'merge-pdf')} class="hidden rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:inline-flex">
+				<a href={getLocalePath(locale, 'merge-pdf')} class="hidden rounded-md bg-[var(--ink)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2a251f] sm:inline-flex">
 					{copy.nav.start}
 				</a>
 			</div>
 		</div>
 	</header>
 
-	<main class="pt-20">
-		<section class="bg-white">
-			<div class="mx-auto grid max-w-screen-xl px-4 py-16 lg:grid-cols-12 lg:gap-8 lg:px-6 lg:py-24 xl:gap-0">
-				<div class="mr-auto place-self-center lg:col-span-7">
-					<p class="mb-4 inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">{copy.hero.badge}</p>
-					<h1 class="mb-6 max-w-3xl text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl xl:text-6xl">
-						{copy.hero.title}
-					</h1>
-					<p class="mb-8 max-w-2xl text-lg font-light text-gray-500 lg:mb-10 lg:text-xl">{copy.hero.description}</p>
-					<div class="flex flex-col gap-4 sm:flex-row">
-						<a href={getLocalePath(locale, 'merge-pdf')} class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-3 text-center text-base font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
-							{copy.hero.primary}
-							<svg class="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-						</a>
-						<a href={getLocalePath(locale, 'pdf-to-word')} class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-center text-base font-medium text-gray-900 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
-							{copy.hero.secondary}
-						</a>
+	<main>
+		<section class="pdfking-container grid gap-8 py-10 lg:grid-cols-[0.92fr_1.08fr] lg:py-16">
+			<div class="flex min-w-0 flex-col justify-center">
+				<p class="mb-5 inline-flex w-fit rounded-md border border-[var(--line)] bg-white px-3 py-1.5 text-sm font-medium text-[var(--muted)] shadow-sm">
+					{copy.hero.badge}
+				</p>
+				<h1 class="max-w-3xl text-4xl font-bold leading-[1.02] tracking-tight text-[var(--ink)] md:text-5xl">
+					{copy.hero.title}
+				</h1>
+				<p class="mt-5 max-w-2xl text-lg leading-8 text-[var(--muted)]">{copy.hero.description}</p>
+				<div class="mt-7 flex flex-col gap-3 sm:flex-row">
+					<a href={getLocalePath(locale, 'merge-pdf')} class="inline-flex items-center justify-center rounded-md bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2a251f]">
+						{copy.hero.primary}
+						<span aria-hidden="true" class="ml-2">→</span>
+					</a>
+					<a href={getLocalePath(locale, 'pdf-to-word')} class="inline-flex items-center justify-center rounded-md border border-[var(--line-strong)] bg-white px-5 py-3 text-sm font-semibold text-[var(--ink)] transition hover:bg-[var(--accent-soft)]">
+						{copy.hero.secondary}
+					</a>
+				</div>
+				<div class="mt-7 flex flex-wrap gap-2">
+					{copy.hero.pills.map((pill) => (
+						<span class="rounded-md border border-[var(--line)] bg-white px-3 py-2 text-sm font-medium text-[var(--muted)]">{pill}</span>
+					))}
+				</div>
+			</div>
+
+			<div class="rounded-3xl border border-[var(--line)] bg-white p-3 shadow-[0_26px_80px_-54px_rgba(23,20,17,0.65)]">
+				<div class="rounded-[1.25rem] border border-[var(--line)] bg-[var(--paper)] p-4 sm:p-6">
+					<div class="flex items-center justify-between gap-4">
+						<div>
+							<p class="text-sm font-semibold text-[var(--ink)]">{ui.directory}</p>
+							<p class="mt-1 text-sm text-[var(--muted)]">{ui.directoryHint}</p>
+						</div>
+						<span class="rounded-md bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent-ink)]">{tools.length} PDF</span>
 					</div>
-					<div class="mt-8 flex flex-wrap gap-3">
-						{copy.hero.pills.map((pill) => (
-							<span class="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700">{pill}</span>
+
+					<div class="mt-5 grid gap-3 sm:grid-cols-2">
+						{featuredTools.map((tool) => (
+							<a href={tool.path} class="rounded-2xl border border-[var(--line)] bg-white p-4 pdfking-card-hover">
+								<div class="flex items-start justify-between gap-3">
+									<div>
+										<p class="text-sm font-semibold text-[var(--ink)]">{tool.name}</p>
+										<p class="mt-1 text-xs text-[var(--muted)]">{tool.categoryLabel}</p>
+									</div>
+									<span class="text-xs font-medium text-[var(--faint)]">{ui.open}</span>
+								</div>
+							</a>
 						))}
 					</div>
-				</div>
 
-				<div class="hidden lg:col-span-5 lg:mt-0 lg:flex">
-					<div class="relative w-full rounded-3xl border border-gray-200 bg-white p-6 shadow-2xl shadow-blue-100">
-						<div class="absolute -left-6 -top-6 h-28 w-28 rounded-full bg-blue-100 blur-2xl"></div>
-						<div class="absolute -bottom-8 right-0 h-36 w-36 rounded-full bg-cyan-100 blur-2xl"></div>
-						<div class="relative rounded-2xl border border-gray-100 bg-gray-50 p-5">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center">
-									<img src="/pdfking-logo.svg" alt="" class="mr-3 h-10 w-10" />
-									<div>
-										<p class="text-sm font-semibold text-gray-900">PDFKING</p>
-										<p class="text-xs text-gray-500">{copy.stack.eyebrow}</p>
-									</div>
-								</div>
-								<span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">Online</span>
-							</div>
-							<div class="mt-6 grid gap-3">
-								{featuredTools.slice(0, 4).map((tool) => (
-									<a href={tool.path} class="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 transition duration-200 hover:border-gray-300 hover:shadow-sm">
-										<div>
-											<p class="text-sm font-semibold text-gray-900">{tool.name}</p>
-											<p class="text-xs text-gray-500">{tool.categoryLabel}</p>
-										</div>
-										<span class="text-sm font-semibold text-slate-600">Open</span>
-									</a>
-								))}
-							</div>
-						</div>
+					<div class="mt-5 rounded-2xl border border-dashed border-[var(--line-strong)] bg-white p-4">
+						<p class="text-sm font-semibold text-[var(--ink)]">{ui.adSlot}</p>
+						<p class="mt-2 text-sm leading-6 text-[var(--muted)]">{ui.adHint}</p>
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<section class="bg-white">
-			<div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6">
-				<div class="grid grid-cols-2 gap-8 text-gray-500 sm:grid-cols-3 lg:grid-cols-6">
-					{tools.slice(0, 6).map((tool) => (
-						<a href={tool.path} class="flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-center text-sm font-semibold text-gray-700 transition duration-200 hover:border-gray-300 hover:bg-white hover:text-gray-950">
-							{tool.name}
-						</a>
+		<section class="border-y border-[var(--line)] bg-white/64">
+			<div class="pdfking-container grid gap-3 py-4 sm:grid-cols-2 lg:grid-cols-4">
+				<div class="rounded-2xl border border-[var(--line)] bg-white p-4">
+					<p class="text-2xl font-bold text-[var(--ink)]">{tools.length}</p>
+					<p class="mt-1 text-sm text-[var(--muted)]">{ui.staticSeo}</p>
+				</div>
+				<div class="rounded-2xl border border-[var(--line)] bg-white p-4">
+					<p class="text-2xl font-bold text-[var(--ink)]">2</p>
+					<p class="mt-1 text-sm text-[var(--muted)]">{ui.langs}</p>
+				</div>
+				<div class="rounded-2xl border border-[var(--line)] bg-white p-4">
+					<p class="text-2xl font-bold text-[var(--ink)]">0</p>
+					<p class="mt-1 text-sm text-[var(--muted)]">{ui.account}</p>
+				</div>
+				<div class="rounded-2xl border border-[var(--line)] bg-white p-4">
+					<p class="text-2xl font-bold text-[var(--ink)]">MIT+</p>
+					<p class="mt-1 text-sm text-[var(--muted)]">{ui.openSource}</p>
+				</div>
+			</div>
+		</section>
+
+		<section id="tools" class="pdfking-container py-14 lg:py-20">
+			<div class="mb-8 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+				<div class="max-w-2xl">
+					<p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--faint)]">{copy.tools.eyebrow}</p>
+					<h2 class="text-3xl font-bold tracking-tight text-[var(--ink)] md:text-4xl">{copy.tools.title}</h2>
+					<p class="mt-4 text-lg leading-8 text-[var(--muted)]">{copy.tools.description}</p>
+				</div>
+				<a href={getLocalePath(locale, 'rotate-pdf')} class="inline-flex w-fit rounded-md border border-[var(--line-strong)] bg-white px-4 py-2 text-sm font-semibold text-[var(--ink)] transition hover:bg-[var(--accent-soft)]">
+					{ui.allTools}
+				</a>
+			</div>
+			<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				{tools.map((tool) => <ToolCard tool={tool} />)}
+			</div>
+		</section>
+
+		<section id="categories" class="bg-white/72">
+			<div class="pdfking-container py-14 lg:py-20">
+				<div class="mb-8 max-w-2xl">
+					<p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--faint)]">{copy.categories.eyebrow}</p>
+					<h2 class="text-3xl font-bold tracking-tight text-[var(--ink)] md:text-4xl">{copy.categories.title}</h2>
+				</div>
+				<div class="grid gap-4 lg:grid-cols-4">
+					{categoryGroups.map((category) => (
+						<article class="rounded-2xl border border-[var(--line)] bg-white p-6 pdfking-card-hover">
+							<h3 class="text-lg font-semibold text-[var(--ink)]">{category.name}</h3>
+							<p class="mt-3 text-sm leading-7 text-[var(--muted)]">{category.description}</p>
+							<div class="mt-5 grid gap-2">
+								{category.tools.map((tool) => (
+									<a href={tool.path} class="flex items-center justify-between rounded-md border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--accent-soft)]">
+										<span>{tool.name}</span>
+										<span aria-hidden="true">→</span>
+									</a>
+								))}
+							</div>
+						</article>
 					))}
 				</div>
 			</div>
 		</section>
 
-		<section id="tools" class="bg-gray-50">
-			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
-				<div class="mx-auto mb-12 max-w-screen-md text-center">
-					<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.tools.title}</h2>
-					<p class="text-gray-500 sm:text-xl">{copy.tools.description}</p>
+		<section class="pdfking-container grid gap-6 py-14 lg:grid-cols-[1fr_0.72fr] lg:py-20">
+			<div class="rounded-3xl border border-[var(--line)] bg-white p-6 lg:p-8">
+				<p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--faint)]">{copy.seo.eyebrow}</p>
+				<h2 class="text-3xl font-bold tracking-tight text-[var(--ink)] md:text-4xl">{copy.seo.title}</h2>
+				<div class="mt-5 grid gap-4 text-base leading-8 text-[var(--muted)]">
+					{copy.seo.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
 				</div>
-				<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-					{featuredTools.map((tool) => <ToolCard tool={tool} />)}
-				</div>
+			</div>
+			<div class="rounded-3xl border border-[var(--line)] bg-[var(--ink)] p-6 text-white lg:p-8">
+				<p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{copy.ads.eyebrow}</p>
+				<h2 class="text-3xl font-bold tracking-tight">{copy.ads.title}</h2>
+				<ul class="mt-6 grid gap-3 text-sm leading-7 text-white/78">
+					{copy.ads.items.map((item) => (
+						<li class="rounded-2xl border border-white/12 bg-white/6 p-4">{item}</li>
+					))}
+				</ul>
 			</div>
 		</section>
 
-		<section id="features" class="bg-white">
-			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
-				<div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-					<div class="text-gray-500 sm:text-lg">
-						<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.seo.title}</h2>
-						<div class="space-y-5 font-light">
-							{copy.seo.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-						</div>
-						<ul class="mt-8 space-y-5 border-t border-gray-200 pt-8">
-							{categories.map((category) => (
-								<li class="flex items-start">
-									<span class="mr-3 mt-1 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-										<svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.5 7.5a1 1 0 01-1.414 0l-4-4A1 1 0 015.207 8.793L8.5 12.086l6.793-6.793a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-									</span>
-									<span><strong class="font-semibold text-gray-900">{category.name}</strong> {category.description}</span>
-								</li>
-							))}
-						</ul>
-					</div>
-					<div class="grid gap-4 sm:grid-cols-2">
-						{workflowTools.map((tool, index) => (
-							<div class:list={['rounded-2xl border p-6 shadow-sm', index === 1 ? 'border-blue-200 bg-blue-50 sm:translate-y-8' : 'border-gray-200 bg-white']}>
-								<p class="mb-2 text-sm font-semibold text-blue-700">{tool.categoryLabel}</p>
-								<h3 class="mb-3 text-xl font-bold text-gray-900">{tool.name}</h3>
-								<p class="text-sm leading-7 text-gray-500">{tool.cardDescription}</p>
-							</div>
-						))}
-					</div>
+		<section id="faq" class="bg-white/72">
+			<div class="pdfking-container grid gap-8 py-14 lg:grid-cols-[0.72fr_1fr] lg:py-20">
+				<div>
+					<p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--faint)]">{copy.faq.eyebrow}</p>
+					<h2 class="text-3xl font-bold tracking-tight text-[var(--ink)] md:text-4xl">{copy.faq.title}</h2>
 				</div>
-			</div>
-		</section>
-
-		<section class="bg-gray-50">
-			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
-				<div class="grid gap-8 border-y border-gray-200 py-8 text-center sm:grid-cols-2 lg:grid-cols-4 lg:py-16">
-					<div>
-						<p class="mb-2 text-4xl font-extrabold text-gray-900">{tools.length}</p>
-						<p class="font-light text-gray-500">SEO Routes</p>
-					</div>
-					<div>
-						<p class="mb-2 text-4xl font-extrabold text-gray-900">2</p>
-						<p class="font-light text-gray-500">Languages</p>
-					</div>
-					<div>
-						<p class="mb-2 text-4xl font-extrabold text-gray-900">0</p>
-						<p class="font-light text-gray-500">Account Required</p>
-					</div>
-					<div>
-						<p class="mb-2 text-4xl font-extrabold text-gray-900">MIT</p>
-						<p class="font-light text-gray-500">UI Template Base</p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section class="bg-white">
-			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
-				<div class="mx-auto max-w-screen-sm text-center">
-					<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.ads.title}</h2>
-					<p class="mb-8 text-gray-500 sm:text-xl">{copy.footer.description}</p>
-					<a href={getLocalePath(locale, 'pdf-watermark')} class="rounded-lg bg-blue-700 px-5 py-3 text-base font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
-						{copy.hero.primary}
-					</a>
-				</div>
-			</div>
-		</section>
-
-		<section id="faq" class="bg-gray-50">
-			<div class="mx-auto max-w-screen-xl px-4 py-16 lg:px-6 lg:py-24">
-				<div class="mx-auto mb-12 max-w-screen-md text-center">
-					<h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900">{copy.faq.title}</h2>
-					<p class="text-gray-500 sm:text-xl">{copy.faq.eyebrow}</p>
-				</div>
-				<div class="mx-auto max-w-screen-md">
-					<FaqList items={copy.faq.items} />
-				</div>
+				<FaqList items={copy.faq.items} />
 			</div>
 		</section>
 	</main>
 
-	<footer class="bg-white">
-		<div class="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 lg:py-12">
-			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-				<div>
-					<a href={getLocalePath(locale)} class="mb-5 flex items-center">
-						<img src="/pdfking-logo.svg" alt="PDFKING logo" class="mr-3 h-9 w-9" />
-						<span class="self-center whitespace-nowrap text-xl font-semibold text-gray-900">PDFKING</span>
-					</a>
-					<p class="text-sm leading-7 text-gray-500">{copy.footer.description}</p>
-				</div>
-				<div>
-					<h3 class="mb-5 text-sm font-semibold uppercase text-gray-900">{copy.footer.popularRoutes}</h3>
-					<ul class="space-y-3 text-gray-500">
-						<li><a href={getLocalePath(locale, 'merge-pdf')} class="hover:text-blue-700">Merge PDF</a></li>
-						<li><a href={getLocalePath(locale, 'split-pdf')} class="hover:text-blue-700">Split PDF</a></li>
-						<li><a href={getLocalePath(locale, 'pdf-to-word')} class="hover:text-blue-700">PDF to Word</a></li>
-					</ul>
-				</div>
-				<div>
-					<h3 class="mb-5 text-sm font-semibold uppercase text-gray-900">{copy.footer.securityRoutes}</h3>
-					<ul class="space-y-3 text-gray-500">
-						<li><a href={getLocalePath(locale, 'unlock-pdf')} class="hover:text-blue-700">Unlock PDF</a></li>
-						<li><a href={getLocalePath(locale, 'protect-pdf')} class="hover:text-blue-700">Protect PDF</a></li>
-						<li><a href={getLocalePath(locale, 'pdf-watermark')} class="hover:text-blue-700">Watermark PDF</a></li>
-					</ul>
-				</div>
-				<div>
-					<h3 class="mb-5 text-sm font-semibold uppercase text-gray-900">{copy.nav.categories}</h3>
-					<ul class="space-y-3 text-gray-500">
-						{categories.map((category) => <li>{category.name}</li>)}
-					</ul>
-				</div>
+	<footer class="border-t border-[var(--line)] bg-[var(--paper)]">
+		<div class="pdfking-container grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
+			<div>
+				<a href={getLocalePath(locale)} class="mb-4 flex items-center gap-3">
+					<img src="/pdfking-logo.svg" alt="PDFKING logo" class="size-10" />
+					<span class="text-lg font-semibold tracking-tight text-[var(--ink)]">PDFKING</span>
+				</a>
+				<p class="text-sm leading-7 text-[var(--muted)]">{copy.footer.description}</p>
+			</div>
+			<div>
+				<h3 class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.footer.popularRoutes}</h3>
+				<ul class="grid gap-3 text-sm font-medium text-[var(--muted)]">
+					{tools.slice(0, 5).map((tool) => <li><a href={tool.path} class="hover:text-[var(--ink)]">{tool.name}</a></li>)}
+				</ul>
+			</div>
+			<div>
+				<h3 class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{copy.footer.securityRoutes}</h3>
+				<ul class="grid gap-3 text-sm font-medium text-[var(--muted)]">
+					{workflowTools.map((tool) => <li><a href={tool.path} class="hover:text-[var(--ink)]">{tool.name}</a></li>)}
+				</ul>
+			</div>
+			<div>
+				<h3 class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--faint)]">{ui.quickAccess}</h3>
+				<ul class="grid gap-3 text-sm font-medium text-[var(--muted)]">
+					{categories.map((category) => <li>{category.name}</li>)}
+				</ul>
 			</div>
 		</div>
 	</footer>

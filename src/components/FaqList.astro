@@ -7,16 +7,16 @@ interface FaqItem {
 const { items } = Astro.props as { items: FaqItem[] };
 ---
 
-<div class="grid gap-4">
+<div class="grid gap-3">
 	{items.map((item) => (
-		<details class="group rounded-[1.7rem] border border-slate-200 bg-white p-6 transition open:shadow-sm">
-			<summary class="flex cursor-pointer list-none items-center justify-between gap-6 pr-2 text-lg font-semibold text-slate-900 marker:hidden">
+		<details class="group rounded-2xl border border-[var(--line)] bg-white p-6 pdfking-card-hover open:border-[var(--line-strong)]">
+			<summary class="flex cursor-pointer list-none items-center justify-between gap-6 pr-1 text-lg font-semibold text-[var(--ink)] marker:hidden">
 				<span>{item.question}</span>
-				<span class="inline-flex size-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition group-open:rotate-45 group-open:text-blue-600">
+				<span class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-[var(--line)] bg-[var(--paper)] text-[var(--muted)] transition group-open:rotate-45 group-open:bg-[var(--accent-soft)] group-open:text-[var(--accent-ink)]">
 					+
 				</span>
 			</summary>
-			<p class="mt-4 text-sm leading-7 text-slate-600">{item.answer}</p>
+			<p class="mt-4 text-sm leading-7 text-[var(--muted)]">{item.answer}</p>
 		</details>
 	))}
 </div>

@@ -193,7 +193,7 @@ function renderResults(elements: WorkbenchElements, files: ResultFile[]) {
 	for (const file of files) {
 		const href = downloadUrl(file.blob);
 		const wrapper = document.createElement('div');
-		wrapper.className = 'rounded-xl border border-gray-200 bg-gray-50 p-4';
+		wrapper.className = 'rounded-xl border border-[var(--line)] bg-white p-4';
 		wrapper.innerHTML = `
 			<div class="flex items-center justify-between gap-4">
 				<div>
@@ -201,7 +201,7 @@ function renderResults(elements: WorkbenchElements, files: ResultFile[]) {
 					<p class="mt-1 text-xs text-gray-500">${escapeHtml(file.description ?? bytesToSize(file.blob.size))}</p>
 				</div>
 				<a
-					class="rounded-lg bg-blue-700 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
+					class="rounded-md bg-[var(--ink)] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2a251f]"
 					href="${href}"
 					download="${escapeHtml(file.name)}"
 				>
@@ -231,7 +231,7 @@ async function renderPdfPreview(elements: WorkbenchElements, file: File) {
 	await page.render({ canvasContext: context, viewport }).promise;
 
 	elements.preview.innerHTML = '';
-	canvas.className = 'mx-auto max-h-[30rem] max-w-full rounded-[1.3rem] shadow-2xl shadow-slate-950/50';
+	canvas.className = 'mx-auto max-h-[24rem] max-w-full rounded-xl border border-[var(--line)] bg-white shadow-sm';
 	elements.preview.appendChild(canvas);
 	elements.previewLabel.textContent = t.pages(pdf.numPages);
 }
@@ -250,7 +250,7 @@ async function renderDocxPreview(elements: WorkbenchElements, file: File) {
 async function renderImagePreview(elements: WorkbenchElements, file: File) {
 	const t = i18n(elements.tool.locale);
 	const imageUrl = URL.createObjectURL(file);
-	elements.preview.innerHTML = `<img src="${imageUrl}" alt="Uploaded preview" class="mx-auto max-h-[30rem] rounded-[1.3rem] object-contain shadow-2xl shadow-slate-950/50" />`;
+	elements.preview.innerHTML = `<img src="${imageUrl}" alt="Uploaded preview" class="mx-auto max-h-[24rem] rounded-xl border border-[var(--line)] bg-white object-contain shadow-sm" />`;
 	elements.previewLabel.textContent = t.imagePreview;
 }
 

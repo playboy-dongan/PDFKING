@@ -23,7 +23,7 @@ const schemaItems = Array.isArray(schema) ? schema : [schema];
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth bg-white">
+<html lang={lang} class="scroll-smooth bg-[var(--paper)]">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -45,7 +45,7 @@ const schemaItems = Array.isArray(schema) ? schema : [schema];
 			<script type="application/ld+json" set:html={JSON.stringify(item)} />
 		))}
 	</head>
-	<body class="min-h-screen bg-white text-slate-900 antialiased">
+	<body class="min-h-screen bg-[var(--paper)] text-[var(--ink)] antialiased">
 		<slot />
 	</body>
 </html>

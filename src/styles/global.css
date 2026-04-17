@@ -4,7 +4,17 @@
 
 :root {
 	color-scheme: light;
-	font-family: Inter, "Segoe UI", sans-serif;
+	font-family: "Aptos", "Segoe UI", sans-serif;
+	--paper: #fbfaf7;
+	--panel: #ffffff;
+	--ink: #171411;
+	--muted: #6f685f;
+	--faint: #9b9489;
+	--line: #e7ded2;
+	--line-strong: #d5c7b6;
+	--accent: #f4b63f;
+	--accent-soft: #fff4d9;
+	--accent-ink: #3a2600;
 }
 
 html,
@@ -14,7 +24,10 @@ body {
 }
 
 body {
-	background-color: #ffffff;
+	background:
+		radial-gradient(circle at top left, rgba(244, 182, 63, 0.16), transparent 32rem),
+		linear-gradient(180deg, #fffdfa 0%, var(--paper) 48rem);
+	color: var(--ink);
 }
 
 a {
@@ -26,6 +39,24 @@ summary::-webkit-details-marker {
 }
 
 ::selection {
-	background: rgba(103, 232, 249, 0.25);
-	color: #f8fafc;
+	background: rgba(244, 182, 63, 0.32);
+	color: var(--ink);
+}
+
+.pdfking-container {
+	width: min(100% - 2rem, 80rem);
+	margin-inline: auto;
+}
+
+.pdfking-card-hover {
+	transition:
+		border-color 180ms ease,
+		background-color 180ms ease,
+		box-shadow 180ms ease;
+}
+
+.pdfking-card-hover:hover {
+	border-color: var(--line-strong);
+	background-color: #fffefa;
+	box-shadow: 0 18px 52px -42px rgba(23, 20, 17, 0.55);
 }
