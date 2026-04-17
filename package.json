@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "test:e2e": "node scripts/e2e-tools.mjs",
+    "capture:layout": "node scripts/capture-layout.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
