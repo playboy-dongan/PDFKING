@@ -29,7 +29,7 @@
 		true,
 	);
 
-	const sourceBrand = 'Browser' + 'Bound';
+	const sourceBrand = 'PDFKINGTools';
 	const targetBrand = 'PDFKING';
 	const brandPattern = new RegExp(sourceBrand, 'g');
 	let rebrandQueued = false;

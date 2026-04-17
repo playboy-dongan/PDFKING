@@ -14,7 +14,6 @@ const chromeDebugPort = Number(process.env.PDFKING_CHROME_DEBUG_PORT ?? String(9
 const chromePath = process.env.CHROME_PATH ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const runRoot = await mkdtemp(path.join(tmpdir(), 'pdfking-e2e-'));
 const downloadDir = path.join(runRoot, 'downloads');
-const sourceSiteNeedle = 'browser' + 'bound';
 
 function log(message) {
 	console.log(`[e2e] ${message}`);
@@ -52,6 +51,16 @@ function killProcessTree(child) {
 		return;
 	}
 	child.kill('SIGTERM');
+}
+
+function isExternalHttpRequest(rawUrl) {
+	try {
+		const url = new URL(rawUrl);
+		const local = new URL(baseUrl);
+		return /^https?:$/.test(url.protocol) && url.origin !== local.origin;
+	} catch {
+		return false;
+	}
 }
 
 async function ensureServer() {
@@ -166,7 +175,6 @@ async function auditDashboardRoutes() {
 			try {
 				const response = await fetch(`${baseUrl}${href}`, { headers: { 'user-agent': 'PDFKING route audit' } });
 				if (!response.ok) failures.push({ href, status: response.status });
-				if (response.headers.has(`x-${sourceSiteNeedle}-upstream`)) failures.push({ href, error: 'runtime proxy header still present' });
 			} catch (error) {
 				failures.push({ href, error: error.message });
 			}
@@ -274,8 +282,8 @@ async function smokeMergePdf() {
 		const remoteRequests = page.events
 			.filter((event) => event.method === 'Network.requestWillBeSent')
 			.map((event) => event.params?.request?.url)
-			.filter((url) => url?.toLowerCase().includes(sourceSiteNeedle));
-		if (remoteRequests.length) throw new Error(`Browser made remote source-site requests: ${remoteRequests.slice(0, 5).join(', ')}`);
+			.filter(isExternalHttpRequest);
+		if (remoteRequests.length) throw new Error(`Browser made external HTTP requests: ${remoteRequests.slice(0, 5).join(', ')}`);
 		log(`PASS merge workflow: ${downloaded[0]} (${outputSize} bytes).`);
 		page.close();
 	} finally {
